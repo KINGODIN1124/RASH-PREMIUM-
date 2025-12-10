@@ -10,11 +10,6 @@
         "versionNumber": "8.8.84.516",
         "uploadDate": "2025-12-05",
         "downloadLink": "https://link-target.net/1425230/ecMUtKNpYb0h"
-      },
-      {
-        "versionNumber": "8.8.80.123",
-        "uploadDate": "2025-11-20",
-        "downloadLink": "https://link-target.net/1425230/spotify-old-8880"
       }
     ]
   },
@@ -43,11 +38,6 @@
         "versionNumber": "12.0.5",
         "uploadDate": "2025-12-08",
         "downloadLink": "https://link-target.net/1438550/WEPSuAD5cl5A"
-      },
-      {
-        "versionNumber": "12.0.0",
-        "uploadDate": "2025-11-15",
-        "downloadLink": "https://link-target.net/1438550/hotstar-old-1200"
       }
     ]
   },
@@ -67,10 +57,10 @@
   },
   {
     "id": "castle",
-    "name": "Castle Mobile Game",
-    "description": "An exclusive version of the popular strategy game with unlimited resources and unlocked campaigns.",
+    "name": "Castle",
+    "description": "",
     "icon": "images/castle.png",
-    "category": "Gaming",
+    "category": "Entertainment",
     "versions": [
       {
         "versionNumber": "3.1.2",
