@@ -5,36 +5,70 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Premium App Access</title>
     <link rel="stylesheet" href="style.css">
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    
+    <script>
+        // NOTE: YOU MUST REPLACE THESE PLACEHOLDERS WITH YOUR ACTUAL FIREBASE CONFIG
+        const firebaseConfig = {
+    apiKey: "AIzaSyC2k8pfLN7GsHRjR0TjA7XWbv1gAu-Yy1Q",
+    authDomain: "rash-premium.firebaseapp.com",
+    projectId: "rash-premium",
+    storageBucket: "rash-premium.firebasestorage.app",
+    messagingSenderId: "707837381992",
+    appId: "1:707837381992:web:da27c427cef2a0d0315add",
+    measurementId: "G-EH6WNH9TPZ"
+  };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+
+        function handleGoogleSignIn() {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            auth.signInWithPopup(provider)
+                .then((result) => {
+                    // Redirect to dashboard, which will check the user status
+                    window.location.href = 'dashboard.html';
+                })
+                .catch((error) => {
+                    alert('Google Sign-In failed: ' + error.message);
+                });
+        }
+
+        function handleGuestSignIn() {
+            // Firebase Anonymous Sign-In
+            auth.signInAnonymously()
+                .then(() => {
+                    // Redirect to dashboard, which will apply the 24-hour lock check
+                    window.location.href = 'dashboard.html';
+                })
+                .catch((error) => {
+                    alert('Guest Sign-In failed: ' + error.message);
+                });
+        }
+    </script>
 </head>
 <body class="login-page">
     <div class="container">
-        <h1>Access Premium Links</h1>
-        <p>Enter your secret password to view the exclusive app collection.</p>
-        <form id="loginForm">
-            <input type="password" id="password" placeholder="Enter Password" required>
-            <button type="submit">Unlock</button>
-        </form>
-        <p id="error-message" class="error-message"></p>
-    </div>
-
-    <script>
-        // --- ⚠️ WARNING: PASSWORD IS VISIBLE IN SOURCE CODE ⚠️ ---
-        const CORRECT_PASSWORD = "123"; 
+        <h1>Welcome to the Premium Hub</h1>
+        <p>Choose your access method below:</p>
         
-        document.getElementById('loginForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const enteredPassword = document.getElementById('password').value;
-            const errorMessage = document.getElementById('error-message');
+        <div class="access-section premium-section">
+            <h2>🔐 Google Sign In (Recommended)</h2>
+            <p>Instant access to your weekly download limit.</p>
+            <button id="googleLoginBtn" type="button" onclick="handleGoogleSignIn()">Sign in with Google</button>
+        </div>
+        
+        <hr class="separator">
 
-            if (enteredPassword === CORRECT_PASSWORD) {
-                // Redirect to the new dashboard page
-                window.location.href = 'dashboard.html';
-            } else {
-                errorMessage.textContent = 'Invalid password. Please try again.';
-                errorMessage.style.display = 'block';
-                document.getElementById('password').value = ''; 
-            }
-        });
-    </script>
+        <div class="access-section guest-section">
+            <h2>👀 Guest Login</h2>
+            <p>Premium access available after a 24-hour waiting period.</p>
+            <button id="guestLoginBtn" type="button" class="guest-button" onclick="handleGuestSignIn()">Continue as Guest</button>
+        </div>
+
+    </div>
 </body>
 </html>
