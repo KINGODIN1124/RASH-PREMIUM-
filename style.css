@@ -1,17 +1,33 @@
 /* --- 1. Global Variables & Reset (Refined Palette) --- */
 :root {
-    --color-bg-primary: #121212;      /* Near-black background */
-    --color-bg-secondary: #1f1f1f;    /* Slightly lighter for cards/sections */
-    --color-text-main: #e0e0e0;       /* Main text color */
-    --color-accent: #33aaff;          /* Primary accent color (clean blue) */
-    --color-accent-hover: #0088cc;    /* Darker blue for hover states */
+    /* DARK MODE (Default) */
+    --color-bg-primary: #121212;      
+    --color-bg-secondary: #1f1f1f;    
+    --color-text-main: #e0e0e0;       
+    --color-text-subtle: #b0b0b0;
+    --color-accent: #33aaff;          
+    --color-accent-hover: #0088cc;    
     --color-error: #ff4d4f;
     --color-card-hover: #2a2a2a;
-    --shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.5); /* Subtle lift */
-    --shadow-lift: 0 6px 15px rgba(0, 0, 0, 0.5); /* Stronger lift on hover */
+    --shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.5); 
+    --shadow-lift: 0 6px 15px rgba(0, 0, 0, 0.5); 
     --font-primary: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
+/* --- LIGHT MODE Variables (Applied via .light-mode class on body) --- */
+body.light-mode {
+    --color-bg-primary: #f4f7f9;
+    --color-bg-secondary: #ffffff;
+    --color-text-main: #333333;
+    --color-text-subtle: #666666;
+    --color-accent: #1e70bf; 
+    --color-accent-hover: #155a9b;
+    --color-card-hover: #ebebeb;
+    --shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.1); 
+    --shadow-lift: 0 6px 15px rgba(0, 0, 0, 0.15); 
+}
+
+/* Base Styles */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -24,6 +40,7 @@ body {
     color: var(--color-text-main);
     line-height: 1.6;
     min-height: 100vh;
+    transition: background-color 0.4s ease, color 0.4s ease; /* Theme transition */
 }
 
 /* --- 2. Layout & Utility --- */
@@ -38,12 +55,17 @@ hr {
     border-top: 1px solid var(--color-bg-secondary);
     margin: 40px 0;
 }
+.separator {
+    margin: 30px 0;
+    border-top: 1px dashed var(--color-text-subtle);
+}
 
 /* --- 3. Header & Footer --- */
 header {
     background-color: var(--color-bg-secondary);
     padding: 30px 0;
     border-bottom: 2px solid var(--color-accent);
+    box-shadow: var(--shadow-subtle);
 }
 
 header h1 {
@@ -53,7 +75,7 @@ header h1 {
 }
 
 header p {
-    color: #b0b0b0;
+    color: var(--color-text-subtle);
     font-size: 0.9em;
 }
 
@@ -61,10 +83,162 @@ footer {
     text-align: center;
     padding: 20px 0;
     margin-top: 50px;
-    border-top: 1px solid #1f1f1f;
+    border-top: 1px solid var(--color-bg-secondary);
     font-size: 0.8em;
-    color: #666;
+    color: var(--color-text-subtle);
 }
+
+/* --- Theme Toggle Button --- */
+.theme-toggle-container {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+#themeToggleBtn {
+    background: var(--color-bg-secondary);
+    color: var(--color-accent);
+    border: 1px solid var(--color-text-subtle);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: var(--shadow-subtle);
+    transition: background-color 0.3s, transform 0.1s;
+    z-index: 10; /* Ensure button is above other content */
+}
+
+#themeToggleBtn:hover {
+    background: var(--color-card-hover);
+    transform: scale(1.05);
+}
+
+#themeToggleBtn .material-icons {
+    font-size: 20px;
+}
+
+/* Theme specific icon and text handling */
+body.light-mode #themeToggleBtn .material-icons {
+    color: var(--color-accent);
+}
+#themeToggleBtn .material-icons::before {
+    content: 'brightness_4'; /* Moon icon for Dark Mode */
+}
+body.light-mode #themeToggleBtn .material-icons::before {
+    content: 'light_mode'; /* Sun icon for Light Mode */
+}
+
+
+/* --- 6. Login Page Styling --- */
+.login-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 80px; 
+}
+
+.login-page .container {
+    background-color: var(--color-bg-secondary);
+    padding: 50px 30px;
+    border-radius: 12px;
+    box-shadow: var(--shadow-lift);
+    max-width: 450px; 
+    text-align: center;
+    animation: fadeIn 0.8s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.login-page h1 {
+    color: var(--color-accent);
+    margin-bottom: 10px;
+    font-size: 2em;
+}
+
+.login-page h2 {
+    color: var(--color-text-main);
+    font-size: 1.4em;
+    margin-top: 0;
+}
+
+.login-page p {
+    color: var(--color-text-subtle);
+    margin-bottom: 15px;
+    font-size: 0.95em;
+}
+
+.small-note {
+    font-size: 0.75em !important;
+    color: #888 !important;
+    margin-top: 5px !important;
+}
+
+.access-section {
+    padding: 20px;
+    border: 1px solid var(--color-bg-primary); 
+    border-radius: 8px;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
+}
+
+.guest-section {
+    background-color: var(--color-bg-primary);
+}
+
+/* --- Button Styling (Shared) --- */
+.google-button, .guest-button {
+    width: 100%;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease, transform 0.1s;
+    margin-top: 15px;
+}
+
+/* Google Button Specific Style */
+.google-button {
+    background-color: var(--color-accent);
+    color: var(--color-bg-secondary);
+}
+.google-button:hover {
+    background-color: var(--color-accent-hover);
+}
+
+/* Guest Button Specific Style */
+.guest-button {
+    background-color: var(--color-text-subtle);
+    color: var(--color-bg-secondary);
+}
+.guest-button:hover {
+    background-color: #999;
+}
+
+/* Icon Styling */
+.button-icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+    font-size: 20px; 
+}
+
+.google-button img {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+}
+
 
 /* --- 4. Content Sections (Dashboard/Detail Pages) --- */
 .links-page main {
@@ -100,19 +274,16 @@ footer {
     text-decoration: none;
     color: var(--color-text-main);
     box-shadow: var(--shadow-subtle);
-    
-    /* Animation: Transition for smooth hover effects */
     transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .link-card:hover {
     background-color: var(--color-card-hover);
-    transform: translateY(-5px); /* Lift effect */
+    transform: translateY(-5px); 
     box-shadow: var(--shadow-lift);
 }
 
 .link-card .icon {
-    /* Container for the image */
     margin-right: 15px;
     width: 40px; 
     height: 40px;
@@ -128,13 +299,11 @@ footer {
 }
 
 .link-card .icon img {
-    /* Styling the actual image */
     width: 100%; 
     height: 100%;
     object-fit: contain; 
 }
 
-/* Remove rotation animation as it looks bad on logos */
 .link-card:hover .icon {
     transform: none; 
 }
@@ -150,72 +319,32 @@ footer {
     color: #999;
 }
 
-
-/* --- 6. Login Page Styling --- */
-.login-page {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+/* Search Bar Styling */
+#search-area {
+    margin-bottom: 40px;
 }
 
-.login-page .container {
-    background-color: var(--color-bg-secondary);
-    padding: 50px 30px;
-    border-radius: 12px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
-    max-width: 380px;
-    text-align: center;
-    animation: fadeIn 0.8s ease-out;
-}
-
-/* Define the Fade-In Keyframe Animation */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-#loginForm input[type="password"] {
+#app-search {
     width: 100%;
-    padding: 12px;
-    margin-bottom: 20px;
-    border: 1px solid #444;
-    border-radius: 4px;
-    background-color: #333;
+    padding: 15px 20px;
+    border: 1px solid #333;
+    border-radius: 8px;
+    background-color: var(--color-bg-secondary);
     color: var(--color-text-main);
-    font-size: 1em;
+    font-size: 1.1em;
     transition: border-color 0.3s ease;
 }
 
-#loginForm input[type="password"]:focus {
+#app-search:focus {
     border-color: var(--color-accent);
     outline: none;
+    box-shadow: 0 0 5px rgba(51, 170, 255, 0.5);
 }
 
-#loginForm button {
-    width: 100%;
-    padding: 12px;
-    border: none;
-    border-radius: 4px;
-    background-color: var(--color-accent);
-    color: var(--color-bg-secondary);
-    font-size: 1em;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.2s ease, transform 0.1s;
-}
-
-#loginForm button:hover {
-    background-color: var(--color-accent-hover);
-}
-
-#loginForm button:active {
-    transform: scale(0.99); 
-}
-
-.error-message {
-    color: var(--color-error);
-    margin-top: 15px;
-    display: none; 
+.update-info {
+    font-size: 0.8em !important; 
+    color: var(--color-accent) !important; 
+    margin-top: 5px;
 }
 
 
@@ -233,7 +362,7 @@ footer {
 
 .app-info p {
     font-size: 1em;
-    color: #b0b0b0;
+    color: var(--color-text-subtle);
 }
 
 /* --- Version List Styling --- */
@@ -317,32 +446,11 @@ footer {
         width: 100%;
         text-align: center;
     }
-}
-/* --- New Search Bar Styling --- */
-#search-area {
-    margin-bottom: 40px;
-}
-
-#app-search {
-    width: 100%;
-    padding: 15px 20px;
-    border: 1px solid #333;
-    border-radius: 8px;
-    background-color: var(--color-bg-secondary);
-    color: var(--color-text-main);
-    font-size: 1.1em;
-    transition: border-color 0.3s ease;
-}
-
-#app-search:focus {
-    border-color: var(--color-accent);
-    outline: none;
-    box-shadow: 0 0 5px rgba(51, 170, 255, 0.5);
-}
-
-/* Styling for the new update timestamp text */
-.update-info {
-    font-size: 0.8em !important; /* Slightly smaller than category text */
-    color: var(--color-accent) !important; /* Highlight the update date */
-    margin-top: 5px;
+    .login-page {
+        padding: 30px 0;
+    }
+    .theme-toggle-container {
+        top: 10px;
+        right: 10px;
+    }
 }
