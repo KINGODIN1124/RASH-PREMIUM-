@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="links-page">
+    <header>
+        <div class="container">
+            <h1>App Library</h1>
+            <p>Select an app to view all available versions and details.</p>
+        </div>
+    </header>
+
+    <main class="container">
+        
+        <div id="search-area">
+            <input type="text" id="app-search" placeholder="Search apps by name or category...">
+        </div>
+        <section class="category">
+            <h2>Featured Apps</h2>
+            <div id="app-grid-container" class="link-grid">
+                </div>
+            <p id="no-results" style="display:none; color: #999; margin-top: 20px;">No results found for your search query.</p>
+        </section>
+    </main>
+    
+    <footer><div class="container"><p>&copy; 2025 Premium Hub</p></div></footer>
+    <script src="script.js"></script> 
+</body>
+</html>

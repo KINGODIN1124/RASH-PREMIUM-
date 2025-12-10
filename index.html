@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium App Access</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="login-page">
+    <div class="container">
+        <h1>Access Premium Links</h1>
+        <p>Enter your secret password to view the exclusive app collection.</p>
+        <form id="loginForm">
+            <input type="password" id="password" placeholder="Enter Password" required>
+            <button type="submit">Unlock</button>
+        </form>
+        <p id="error-message" class="error-message"></p>
+    </div>
+
+    <script>
+        // --- ⚠️ WARNING: PASSWORD IS VISIBLE IN SOURCE CODE ⚠️ ---
+        const CORRECT_PASSWORD = "123"; 
+        
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const enteredPassword = document.getElementById('password').value;
+            const errorMessage = document.getElementById('error-message');
+
+            if (enteredPassword === CORRECT_PASSWORD) {
+                // Redirect to the new dashboard page
+                window.location.href = 'dashboard.html';
+            } else {
+                errorMessage.textContent = 'Invalid password. Please try again.';
+                errorMessage.style.display = 'block';
+                document.getElementById('password').value = ''; 
+            }
+        });
+    </script>
+</body>
+</html>

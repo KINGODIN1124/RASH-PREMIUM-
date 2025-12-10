@@ -1,0 +1,110 @@
+[
+  {
+    "id": "spotify",
+    "name": "Spotify Premium",
+    "description": "Unlock ad-free music, unlimited skips, and high-quality streaming offline and on the go. Compatible with Android devices.",
+    "icon": "images/spotify.png",
+    "category": "Entertainment",
+    "versions": [
+      {
+        "versionNumber": "8.8.84.516",
+        "uploadDate": "2025-12-05",
+        "downloadLink": "https://link-target.net/1425230/ecMUtKNpYb0h"
+      },
+      {
+        "versionNumber": "8.8.80.123",
+        "uploadDate": "2025-11-20",
+        "downloadLink": "https://link-target.net/1425230/spotify-old-8880"
+      }
+    ]
+  },
+  {
+    "id": "kinemaster",
+    "name": "KineMaster Pro",
+    "description": "Full-featured video editing tool for mobile. Access premium assets, effects, and export high-resolution video without watermarks.",
+    "icon": "images/kinemaster.png",
+    "category": "Creative Tools",
+    "versions": [
+      {
+        "versionNumber": "7.2.1",
+        "uploadDate": "2025-12-01",
+        "downloadLink": "https://link-center.net/1438550/dP4XtgqcsuU1"
+      }
+    ]
+  },
+  {
+    "id": "hotstar",
+    "name": "Disney+ Hotstar VIP",
+    "description": "Access exclusive content including sports, movies, and TV shows. No regional restrictions apply.",
+    "icon": "images/hotstar.png",
+    "category": "Entertainment",
+    "versions": [
+      {
+        "versionNumber": "12.0.5",
+        "uploadDate": "2025-12-08",
+        "downloadLink": "https://link-target.net/1438550/WEPSuAD5cl5A"
+      },
+      {
+        "versionNumber": "12.0.0",
+        "uploadDate": "2025-11-15",
+        "downloadLink": "https://link-target.net/1438550/hotstar-old-1200"
+      }
+    ]
+  },
+  {
+    "id": "truecaller",
+    "name": "Truecaller Gold",
+    "description": "Premium features unlocked: caller ID without internet, advanced spam blocking, and incognito mode.",
+    "icon": "images/truecaller.png",
+    "category": "Utility",
+    "versions": [
+      {
+        "versionNumber": "13.25.6",
+        "uploadDate": "2025-12-04",
+        "downloadLink": "https://link-target.net/1438550/kvu1lPW7ZsKu"
+      }
+    ]
+  },
+  {
+    "id": "castle",
+    "name": "Castle Mobile Game",
+    "description": "An exclusive version of the popular strategy game with unlimited resources and unlocked campaigns.",
+    "icon": "images/castle.png",
+    "category": "Gaming",
+    "versions": [
+      {
+        "versionNumber": "3.1.2",
+        "uploadDate": "2025-11-25",
+        "downloadLink": "https://link-center.net/1425230/IsUJzhj4LUdZ"
+      }
+    ]
+  },
+  {
+    "id": "bilibili",
+    "name": "BiliBili Premium",
+    "description": "Ad-free viewing experience and access to region-locked anime and video content with high quality settings.",
+    "icon": "images/bilibili.png",
+    "category": "Entertainment",
+    "versions": [
+      {
+        "versionNumber": "7.5.0",
+        "uploadDate": "2025-12-09",
+        "downloadLink": "https://link-hub.net/1425230/jcjW77HG2KkC"
+      }
+    ]
+  },
+  {
+    "id": "vpn",
+    "name": "Secure VPN Client",
+    "description": "A high-speed, secure VPN application offering multiple server locations and unlimited bandwidth for anonymous browsing.",
+    "icon": "images/vpn.png",
+    "category": "Utility",
+    "versions": [
+      {
+        "versionNumber": "2.4.0",
+        "uploadDate": "2025-12-06",
+        "downloadLink": "https://link-hub.net/1425230/bXTCwclhA4Vv"
+      }
+    ]
+  }
+]
