@@ -3,7 +3,7 @@
     "id": "spotify",
     "name": "Spotify Premium",
     "description": "Unlock ad-free music, unlimited skips, and high-quality streaming offline and on the go. Compatible with Android devices.",
-    "icon": "images/spotify.png",
+    "icon": "images/Spotify.png",
     "category": "Entertainment",
     "versions": [
       {
@@ -17,7 +17,7 @@
     "id": "kinemaster",
     "name": "KineMaster Pro",
     "description": "Full-featured video editing tool for mobile. Access premium assets, effects, and export high-resolution video without watermarks.",
-    "icon": "images/kinemaster.png",
+    "icon": "images/Kinemaster.png",
     "category": "Creative Tools",
     "versions": [
       {
@@ -31,7 +31,7 @@
     "id": "hotstar",
     "name": "Disney+ Hotstar VIP",
     "description": "Access exclusive content including sports, movies, and TV shows. No regional restrictions apply.",
-    "icon": "images/hotstar.png",
+    "icon": "images/Hotstar.png",
     "category": "Entertainment",
     "versions": [
       {
@@ -45,7 +45,7 @@
     "id": "truecaller",
     "name": "Truecaller Gold",
     "description": "Premium features unlocked: caller ID without internet, advanced spam blocking, and incognito mode.",
-    "icon": "images/truecaller.png",
+    "icon": "images/truecaller-gold.png",
     "category": "Utility",
     "versions": [
       {
@@ -58,8 +58,8 @@
   {
     "id": "castle",
     "name": "Castle",
-    "description": "",
-    "icon": "images/castle.png",
+    "description": "Castle is an all-in-one entertainment app designed for viewers who love watching movies and web series in their preferred language. With a wide collection of international, regional, and trending titles, the Castle app makes it easy to explore content from around the world—dubbed or subtitled in multiple languages for a seamless viewing experience.",
+    "icon": "images/Castle.png",
     "category": "Entertainment",
     "versions": [
       {
@@ -73,7 +73,7 @@
     "id": "bilibili",
     "name": "BiliBili Premium",
     "description": "Ad-free viewing experience and access to region-locked anime and video content with high quality settings.",
-    "icon": "images/bilibili.png",
+    "icon": "images/Bilibili.png",
     "category": "Entertainment",
     "versions": [
       {
@@ -87,7 +87,7 @@
     "id": "vpn",
     "name": "Secure VPN Client",
     "description": "A high-speed, secure VPN application offering multiple server locations and unlimited bandwidth for anonymous browsing.",
-    "icon": "images/vpn.png",
+    "icon": "images/VPN.png",
     "category": "Utility",
     "versions": [
       {
