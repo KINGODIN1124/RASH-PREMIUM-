@@ -1,122 +1,261 @@
-let allAppsData = []; // Global variable to store all app data once fetched
+// =============================================================
+// FINAL app.js — MOBILE SAFE, GOOGLE REDIRECT LOGIN, STABLE
+// =============================================================
 
-document.addEventListener('DOMContentLoaded', () => {
-    const path = window.location.pathname;
-    const page = path.substring(path.lastIndexOf('/') + 1);
+// ----------------- FIREBASE CONFIG -----------------
+const firebaseConfig = {
+  apiKey: "AIzaSyC2k8pfLN7GsHRjR0TjA7XWbv1gAu-Yy1Q",
+  authDomain: "rash-premium.firebaseapp.com",
+  projectId: "rash-premium",
+  storageBucket: "rash-premium.firebasestorage.app",
+  messagingSenderId: "707837381992",
+  appId: "1:707837381992:web:da27c427cef2a0d0315add"
+};
 
-    if (page === 'dashboard.html' || page === 'app_detail.html') {
-        fetch('data.json')
-            .then(response => {
-                if (!response.ok) throw new Error(`HTTP Error: Status ${response.status} loading data.json`);
-                return response.json();
-            })
-            .then(data => {
-                if (page === 'dashboard.html') {
-                    allAppsData = data; // Store data globally
-                    renderDashboard(allAppsData);
-                    setupSearch(); // Set up the search listener
-                } else if (page === 'app_detail.html') {
-                    renderAppDetail(data);
-                }
-            })
-            .catch(error => {
-                console.error("Failed to load data:", error);
-                const container = document.getElementById('app-grid-container') || document.getElementById('version-list-container');
-                if (container) {
-                    container.innerHTML = `<p class="error-message" style="display:block;">
-                        Error loading data. Please check the 'data.json' file or contact support.
-                    </p>`;
-                }
-            });
-    }
-});
+const WEEKLY_LIMIT = 5;
 
-// --- NEW FUNCTION: Setup Search Listener ---
-function setupSearch() {
-    const searchInput = document.getElementById('app-search');
-    if (searchInput) {
-        searchInput.addEventListener('input', (event) => {
-            const query = event.target.value.toLowerCase();
-            const filteredApps = allAppsData.filter(app => {
-                // Check name and category against the query
-                return app.name.toLowerCase().includes(query) ||
-                       app.category.toLowerCase().includes(query);
-            });
-            renderDashboard(filteredApps); // Re-render the dashboard with filtered results
-        });
-    }
+// ----------------- GLOBALS -----------------
+let auth, firestore, currentUser;
+let allAppsData = null;
+
+// ----------------- INIT FIREBASE -----------------
+async function initFirebase() {
+  const base = "https://www.gstatic.com/firebasejs/10.12.2";
+
+  const { initializeApp } = await import(`${base}/firebase-app.js`);
+  const {
+    getAuth,
+    onAuthStateChanged,
+    GoogleAuthProvider,
+    signInWithRedirect,
+    getRedirectResult,
+    signInAnonymously,
+    signOut
+  } = await import(`${base}/firebase-auth.js`);
+  const {
+    getFirestore,
+    doc,
+    getDoc,
+    setDoc,
+    updateDoc,
+    increment,
+    collection,
+    addDoc,
+    serverTimestamp
+  } = await import(`${base}/firebase-firestore.js`);
+
+  initializeApp(firebaseConfig);
+  auth = getAuth();
+  firestore = getFirestore();
+
+  // ----- Handle Google redirect result (MOBILE SAFE) -----
+  getRedirectResult(auth)
+    .then((result) => {
+      if (result?.user) {
+        location.href = "dashboard.html";
+      }
+    })
+    .catch((err) => {
+      alert("Login error: " + err.message);
+    });
+
+  // ----- Auth state -----
+  onAuthStateChanged(auth, (user) => {
+    currentUser = user || null;
+    updateUserUI();
+  });
+
+  // ----- BUTTONS -----
+  const googleBtn = document.getElementById("googleLoginBtn");
+  const guestBtn = document.getElementById("guestLoginBtn");
+
+  if (googleBtn) {
+    googleBtn.onclick = async () => {
+      const provider = new GoogleAuthProvider();
+      await signInWithRedirect(auth, provider);
+    };
+  }
+
+  if (guestBtn) {
+    guestBtn.onclick = async () => {
+      await signInAnonymously(auth);
+      location.href = "dashboard.html";
+    };
+  }
+
+  // ----- PAGE ROUTING -----
+  const page = location.pathname.split("/").pop();
+
+  if (page === "dashboard.html") {
+    await loadApps();
+    setupSearch();
+  }
+
+  if (page === "app_detail.html") {
+    await loadApps();
+    renderAppDetail();
+  }
 }
 
-// --- Function to Render the Dashboard (App Grid) ---
+// ----------------- WEEK HANDLING (FIXED) -----------------
+function getWeekStart() {
+  const today = new Date();
+  const day = today.getDay() || 7;
+  const monday = new Date(today);
+  monday.setDate(today.getDate() - day + 1);
+  return monday.toISOString().split("T")[0];
+}
+
+// ----------------- DOWNLOAD LIMIT -----------------
+async function getUserDoc() {
+  if (!currentUser) return null;
+
+  const ref = doc(firestore, "users", currentUser.uid);
+  const snap = await getDoc(ref);
+  const weekStart = getWeekStart();
+
+  if (!snap.exists() || snap.data().weekStart !== weekStart) {
+    await setDoc(ref, { downloadsThisWeek: 0, weekStart });
+    return { downloadsThisWeek: 0 };
+  }
+
+  return snap.data();
+}
+
+async function canDownload() {
+  if (!currentUser) return true;
+  const data = await getUserDoc();
+  return data.downloadsThisWeek < WEEKLY_LIMIT;
+}
+
+async function incrementDownload() {
+  if (!currentUser) return;
+  const ref = doc(firestore, "users", currentUser.uid);
+  await updateDoc(ref, { downloadsThisWeek: increment(1) });
+}
+
+// ----------------- DATA -----------------
+async function loadApps() {
+  const res = await fetch("data.json");
+  allAppsData = await res.json();
+  renderDashboard(allAppsData);
+}
+
 function renderDashboard(apps) {
-    const container = document.getElementById('app-grid-container');
-    const noResults = document.getElementById('no-results');
-    if (!container) return;
+  const grid = document.getElementById("app-grid-container");
+  if (!grid) return;
 
-    container.innerHTML = ''; // Clear previous cards
-
-    if (apps.length === 0) {
-        noResults.style.display = 'block';
-        return;
-    } else {
-        noResults.style.display = 'none';
-    }
-
-    apps.forEach(app => {
-        // Find the latest version upload date
-        // Note: Assuming the first version in the array is the latest
-        const latestUpdate = app.versions.length > 0 ? app.versions[0].uploadDate : 'N/A';
-        
-        const linkCard = document.createElement('a');
-        linkCard.href = `app_detail.html?id=${app.id}`; 
-        linkCard.className = "link-card";
-        
-        linkCard.innerHTML = `
-            <div class="icon">
-                <img src="${app.icon}" alt="${app.name} Icon">
-            </div>
-            <div class="details">
-                <h3>${app.name}</h3>
-                <p>Category: ${app.category}</p>
-                <p class="update-info">Last Update: ${latestUpdate}</p>
-            </div>
-        `;
-        container.appendChild(linkCard);
-    });
+  grid.innerHTML = "";
+  apps.forEach(app => {
+    grid.innerHTML += `
+      <a class="link-card" href="app_detail.html?id=${app.id}">
+        <div class="icon"><img src="${app.icon}"></div>
+        <div class="details">
+          <h3>${app.name}</h3>
+          <p>${app.category}</p>
+        </div>
+      </a>
+    `;
+  });
 }
 
-// --- Function to Render the App Detail Page (No changes needed here) ---
-function renderAppDetail(apps) {
-    const urlParams = new URLSearchParams(window.location.search);
-    const appId = urlParams.get('id');
+// ----------------- SEARCH -----------------
+function setupSearch() {
+  const input = document.getElementById("app-search");
+  if (!input) return;
 
-    const app = apps.find(a => a.id === appId);
+  input.oninput = () => {
+    const q = input.value.toLowerCase();
+    renderDashboard(
+      allAppsData.filter(a =>
+        a.name.toLowerCase().includes(q) ||
+        a.category.toLowerCase().includes(q)
+      )
+    );
+  };
+}
 
-    if (!app) {
-        document.getElementById('app-name').textContent = "App Not Found";
-        document.getElementById('app-category').textContent = "Error";
-        document.getElementById('app-description').textContent = "The requested application could not be found in the database.";
-        return;
+// ----------------- DETAIL PAGE -----------------
+function renderAppDetail() {
+  const id = new URLSearchParams(location.search).get("id");
+  const app = allAppsData.find(a => a.id === id);
+  if (!app) return;
+
+  document.getElementById("detail-app-name").textContent = app.name;
+  document.getElementById("detail-app-icon").src = app.icon;
+
+  const list = document.getElementById("version-list-container");
+  list.innerHTML = "";
+
+  app.versions.forEach(v => {
+    list.innerHTML += `
+      <div class="version-card">
+        <div>
+          <h4>${v.versionNumber}</h4>
+          <p>${v.uploadDate}</p>
+        </div>
+        <button class="download-button"
+          data-link="${v.downloadLink}"
+          data-app="${app.name}"
+          data-version="${v.versionNumber}">
+          Download
+        </button>
+      </div>
+    `;
+  });
+
+  document.querySelectorAll(".download-button").forEach(btn => {
+    btn.onclick = () => confirmDownload(
+      btn.dataset.link,
+      btn.dataset.app,
+      btn.dataset.version
+    );
+  });
+}
+
+// ----------------- MODAL + DOWNLOAD -----------------
+async function confirmDownload(link, appName, version) {
+  const modal = document.getElementById("downloadModal");
+  modal.style.display = "flex";
+
+  document.getElementById("cancelDownload").onclick = () => {
+    modal.style.display = "none";
+  };
+
+  document.getElementById("confirmDownload").onclick = async () => {
+    modal.style.display = "none";
+
+    if (!(await canDownload())) {
+      alert("Weekly limit reached");
+      return;
     }
 
-    document.getElementById('app-title').textContent = `${app.name} - Versions`;
-    document.getElementById('app-name').textContent = app.name;
-    document.getElementById('app-category').textContent = `Category: ${app.category}`;
-    document.getElementById('app-description').textContent = app.description;
-
-    const versionContainer = document.getElementById('version-list-container');
-    
-    app.versions.forEach(version => {
-        const versionCard = document.createElement('div');
-        versionCard.className = 'version-card';
-
-        versionCard.innerHTML = `
-            <div>
-                <h4>Version: ${version.versionNumber}</h4>
-                <p>Uploaded: ${version.uploadDate}</p>
-            </div>
-            <a href="${version.downloadLink}" target="_blank" class="download-button">Download Link</a>
-        `;
-        versionContainer.appendChild(versionCard);
-    });
+    await incrementDownload();
+    window.open(link, "_blank");
+  };
 }
+
+// ----------------- USER UI -----------------
+function updateUserUI() {
+  const box = document.getElementById("user-dashboard-info");
+  if (!box) return;
+
+  if (currentUser) {
+    box.innerHTML = `
+      <div>
+        <strong>${currentUser.displayName || "Guest"}</strong><br>
+        ${currentUser.email || ""}
+      </div>
+    `;
+  } else {
+    box.innerHTML = `<a href="index.html">Sign in</a>`;
+  }
+}
+
+// ----------------- THEME -----------------
+function toggleTheme() {
+  document.body.classList.toggle("light-mode");
+}
+
+// ----------------- START -----------------
+initFirebase();
