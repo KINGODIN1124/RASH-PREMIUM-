@@ -71,38 +71,28 @@
     </script>
 </head>
 <body class="login-page">
-    <div class="theme-toggle-container">
-        <button id="themeToggleBtn" onclick="toggleTheme()">
-            <span class="material-icons">brightness_4</span>
-        </button>
-    </div>
-    
-    <div class="container">
-        <h1>Welcome to the Premium Hub</h1>
-        <p>Choose your access method below:</p>
-        
-        <div class="access-section premium-section">
-            <h2>🔐 Member Sign In</h2>
-            <p>Instant access to your weekly download limit.</p>
-            <button id="googleLoginBtn" type="button" class="google-button" onclick="handleGoogleSignIn()">
-                <img src="https://img.icons8.com/color/48/000000/google-logo.png" alt="Google Icon" class="button-icon"/>
-                Sign in with Google
-            </button>
-            <p class="small-note">Tracks your weekly download limit.</p>
-        </div>
-        
-        <hr class="separator">
+  <div class="theme-toggle-container">
+    <button id="themeToggleBtn" onclick="toggleTheme()">🌗</button>
+  </div>
 
-        <div class="access-section guest-section">
-            <h2>👀 Guest Login</h2>
-            <p>Access the library instantly without limits (untracked).</p>
-            <button id="guestLoginBtn" type="button" class="guest-button" onclick="handleGuestSignIn()">
-                <span class="material-icons button-icon">person</span>
-                Continue as Guest
-            </button>
-            <p class="small-note">Progress may be lost if browser data is cleared.</p>
-        </div>
+  <div class="login-card">
+    <h1>Premium Hub</h1>
+    <p>Sign in to access premium apps safely</p>
 
-    </div>
+    <button id="googleLoginBtn" class="auth-btn google">
+      <img src="https://img.icons8.com/color/48/google-logo.png" width="22">
+      Continue with Google
+    </button>
+
+    <button id="guestLoginBtn" class="auth-btn guest">
+      Continue as Guest
+    </button>
+
+    <p class="auth-note">
+      Guest users have limited features
+    </p>
+  </div>
+
+  <script src="app.js"></script>
 </body>
 </html>
