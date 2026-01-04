@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RASH MODS - Admin Panel</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/auth.js" defer></script>
+    <script src="js/admin.js" defer></script>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>RASH MODS - Admin Panel</h1>
+            <div class="header-controls">
+                <button id="back-btn" class="btn">← Back to Dashboard</button>
+                <button id="theme-toggle" class="btn-icon">🌙</button>
+                <button id="logout" class="btn">Logout</button>
+            </div>
+        </div>
+    </header>
+    <main>
+        <div class="admin-panel">
+            <h2>Add New App</h2>
+            <form id="app-form" class="admin-form">
+                <div class="form-group">
+                    <label for="app-name">App Name *</label>
+                    <input type="text" id="app-name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="app-title">App Title (Display Name) *</label>
+                    <input type="text" id="app-title" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="app-description">Description *</label>
+                    <textarea id="app-description" rows="4" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="app-category">Category *</label>
+                    <select id="app-category" required>
+                        <option value="">Select Category</option>
+                        <option value="Photography">Photography</option>
+                        <option value="Music">Music</option>
+                        <option value="Health & Fitness">Health & Fitness</option>
+                        <option value="Productivity">Productivity</option>
+                        <option value="Weather">Weather</option>
+                        <option value="Video">Video</option>
+                        <option value="Games">Games</option>
+                        <option value="Social">Social</option>
+                        <option value="Education">Education</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="app-icon">App Icon URL *</label>
+                    <input type="url" id="app-icon" placeholder="https://example.com/icon.png" required>
+                </div>
+
+                <div class="form-group">
+                    <label>System Requirements</label>
+                    <div class="requirements-input">
+                        <input type="text" id="req-android" placeholder="Android version" value="Android 8.0 or higher">
+                        <input type="text" id="req-ram" placeholder="RAM requirement" value="2GB RAM minimum">
+                        <input type="text" id="req-storage" placeholder="Storage requirement" value="500MB free storage">
+                        <input type="text" id="req-internet" placeholder="Internet requirement" value="Internet connection for activation">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Screenshots (URLs)</label>
+                    <div class="screenshots-input">
+                        <input type="url" id="screenshot1" placeholder="Screenshot 1 URL">
+                        <input type="url" id="screenshot2" placeholder="Screenshot 2 URL">
+                        <input type="url" id="screenshot3" placeholder="Screenshot 3 URL">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>App Versions</label>
+                    <div id="versions-container">
+                        <div class="version-input">
+                            <input type="text" placeholder="Version (e.g., 1.0.0)" class="version-number">
+                            <input type="date" class="version-date">
+                            <input type="text" placeholder="Size (e.g., 45MB)" class="version-size">
+                            <button type="button" class="btn btn-secondary remove-version">Remove</button>
+                        </div>
+                    </div>
+                    <button type="button" id="add-version" class="btn btn-secondary">Add Version</button>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Add App</button>
+                    <button type="button" id="clear-form" class="btn btn-secondary">Clear Form</button>
+                </div>
+            </form>
+
+            <div class="admin-apps-list">
+                <h3>Existing Apps</h3>
+                <div id="apps-list">
+                    <!-- Apps will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

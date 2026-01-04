@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RASH MODS - App Details</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/auth.js" defer></script>
+    <script src="js/app-detail.js" defer></script>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <button id="back-btn" class="btn-icon btn-back">← Back</button>
+            <h1 id="app-title">App Details</h1>
+            <div class="header-controls">
+                <button id="user-dashboard" class="btn">Dashboard</button>
+                <button id="theme-toggle" class="btn-icon">🌙</button>
+                <button id="logout" class="btn">Logout</button>
+            </div>
+        </div>
+    </header>
+    <main>
+        <div id="app-details" class="app-details">
+            <!-- App details will be loaded here -->
+        </div>
+    </main>
+    <div id="download-modal" class="modal">
+        <div class="modal-content">
+            <h2>Confirm Download</h2>
+            <p id="modal-text">Are you sure you want to download this version?</p>
+            <div class="modal-buttons">
+                <button id="confirm-download" class="btn btn-primary">Download</button>
+                <button id="cancel-download" class="btn btn-secondary">Cancel</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
