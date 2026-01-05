@@ -23,97 +23,153 @@ async function loadAppDetails() {
         }
 
         renderAppDetails();
+        // Add entrance animations
+        setTimeout(() => {
+            document.querySelectorAll('.section').forEach((section, index) => {
+                section.style.animation = `slideInUp 0.6s ease-out ${index * 0.1}s both`;
+            });
+        }, 100);
     } catch (error) {
         console.error('Error loading app details:', error);
         document.getElementById('app-details').innerHTML = '<div class="error">Failed to load app details.</div>';
     }
 }
 
-// Render app details
+// Render app details with improved UI
 function renderAppDetails() {
     document.getElementById('app-title').textContent = currentApp.name;
 
     const detailsContainer = document.getElementById('app-details');
     detailsContainer.innerHTML = `
-        <div class="app-header">
-            <img src="${currentApp.icon}" alt="${currentApp.name}" class="app-icon-large" loading="lazy">
-            <div class="app-meta">
-                <h2>${currentApp.name}</h2>
-                <span class="category">${currentApp.category}</span>
-                <p class="description">${currentApp.description}</p>
-                <div class="app-stats">
-                    <div class="stat-item">⭐ 4.8 Rating</div>
-                    <div class="stat-item">📥 10K+ Downloads</div>
-                    <div class="stat-item">🔒 Premium App</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="app-sections">
-            <div class="section">
-                <h3>Screenshots</h3>
-                <div class="screenshots">
-                    <img src="https://via.placeholder.com/200x350/333/fff?text=Screenshot+1" alt="Screenshot 1" loading="lazy">
-                    <img src="https://via.placeholder.com/200x350/333/fff?text=Screenshot+2" alt="Screenshot 2" loading="lazy">
-                    <img src="https://via.placeholder.com/200x350/333/fff?text=Screenshot+3" alt="Screenshot 3" loading="lazy">
-                </div>
-            </div>
-
-            <div class="section">
-                <h3>System Requirements</h3>
-                <ul class="requirements">
-                    <li>Android 8.0 or higher</li>
-                    <li>2GB RAM minimum</li>
-                    <li>500MB free storage</li>
-                    <li>Internet connection for activation</li>
-                </ul>
-            </div>
-
-            <div class="section">
-                <h3>What's New</h3>
-                <div class="changelog">
-                    <div class="changelog-item">
-                        <h4>Latest Update</h4>
-                        <p>• Improved performance and stability</p>
-                        <p>• New user interface enhancements</p>
-                        <p>• Bug fixes and optimizations</p>
+        <div class="app-hero">
+            <div class="hero-background"></div>
+            <div class="hero-content">
+                <img src="${currentApp.icon}" alt="${currentApp.name}" class="app-icon-hero" loading="lazy">
+                <div class="hero-info">
+                    <h1 class="hero-title">${currentApp.name}</h1>
+                    <p class="hero-description">${currentApp.description}</p>
+                    <div class="hero-stats">
+                        <div class="stat-badge">
+                            <span class="stat-icon">⭐</span>
+                            <span class="stat-value">${currentApp.rating || 'N/A'}</span>
+                            <span class="stat-label">Rating</span>
+                        </div>
+                        <div class="stat-badge">
+                            <span class="stat-icon">📥</span>
+                            <span class="stat-value">${currentApp.downloads || 'N/A'}</span>
+                            <span class="stat-label">Downloads</span>
+                        </div>
+                        <div class="stat-badge">
+                            <span class="stat-icon">🏷️</span>
+                            <span class="stat-value">${currentApp.category}</span>
+                            <span class="stat-label">Category</span>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="versions">
-            <h3>Available Versions</h3>
-            ${currentApp.versions.map(version => `
-                <div class="version-item">
-                    <div class="version-info">
-                        <h4>Version ${version.version}</h4>
-                        <p>Released: ${version.releaseDate} | Size: ${version.size}</p>
-                    </div>
-                    <button class="btn btn-primary download-btn" data-version="${version.version}">Download</button>
-                </div>
-            `).join('')}
-        </div>
+        <div class="app-content">
+            <div class="content-grid">
+                <div class="main-content">
+                    <section class="content-section">
+                        <h2 class="section-title">
+                            <span class="title-icon">📱</span>
+                            Screenshots
+                        </h2>
+                        <div class="screenshots-grid">
+                            <img src="https://via.placeholder.com/300x600/333/fff?text=Screenshot+1" alt="Screenshot 1" loading="lazy" class="screenshot">
+                            <img src="https://via.placeholder.com/300x600/333/fff?text=Screenshot+2" alt="Screenshot 2" loading="lazy" class="screenshot">
+                            <img src="https://via.placeholder.com/300x600/333/fff?text=Screenshot+3" alt="Screenshot 3" loading="lazy" class="screenshot">
+                            <img src="https://via.placeholder.com/300x600/333/fff?text=Screenshot+4" alt="Screenshot 4" loading="lazy" class="screenshot">
+                        </div>
+                    </section>
 
-        <div class="section">
-            <h3>User Reviews</h3>
-            <div class="review-form">
-                <h4>Write a Review</h4>
-                <div class="rating-input">
-                    <label>Rating:</label>
-                    <div class="stars">
-                        <span class="star" data-rating="1">⭐</span>
-                        <span class="star" data-rating="2">⭐</span>
-                        <span class="star" data-rating="3">⭐</span>
-                        <span class="star" data-rating="4">⭐</span>
-                        <span class="star" data-rating="5">⭐</span>
+                    <section class="content-section">
+                        <h2 class="section-title">
+                            <span class="title-icon">📋</span>
+                            What's New
+                        </h2>
+                        <div class="changelog-card">
+                            <div class="changelog-header">
+                                <h3>Latest Update - Version ${currentApp.versions[0]?.version || 'N/A'}</h3>
+                                <span class="update-date">${currentApp.versions[0]?.releaseDate || 'N/A'}</span>
+                            </div>
+                            <ul class="changelog-list">
+                                <li>🚀 Improved performance and stability</li>
+                                <li>🎨 New user interface enhancements</li>
+                                <li>🐛 Bug fixes and optimizations</li>
+                                <li>⚡ Faster loading times</li>
+                            </ul>
+                        </div>
+                    </section>
+
+                    <section class="content-section">
+                        <h2 class="section-title">
+                            <span class="title-icon">💬</span>
+                            User Reviews
+                        </h2>
+                        <div class="review-form-card">
+                            <h3>Write a Review</h3>
+                            <div class="rating-input">
+                                <label>Your Rating:</label>
+                                <div class="stars">
+                                    <span class="star" data-rating="1">⭐</span>
+                                    <span class="star" data-rating="2">⭐</span>
+                                    <span class="star" data-rating="3">⭐</span>
+                                    <span class="star" data-rating="4">⭐</span>
+                                    <span class="star" data-rating="5">⭐</span>
+                                </div>
+                            </div>
+                            <textarea id="review-text" placeholder="Share your experience with this app..." rows="4"></textarea>
+                            <button id="submit-review" class="btn btn-primary btn-submit">
+                                <span class="btn-icon">📝</span>
+                                Submit Review
+                            </button>
+                        </div>
+                        <div class="reviews-container" id="reviews-list">
+                            <!-- Reviews will be loaded here -->
+                        </div>
+                    </section>
+                </div>
+
+                <div class="sidebar">
+                    <div class="sidebar-card">
+                        <h3 class="sidebar-title">
+                            <span class="title-icon">⚙️</span>
+                            System Requirements
+                        </h3>
+                        <ul class="requirements-list">
+                            <li><span class="req-icon">📱</span> Android 8.0 or higher</li>
+                            <li><span class="req-icon">🧠</span> 2GB RAM minimum</li>
+                            <li><span class="req-icon">💾</span> 500MB free storage</li>
+                            <li><span class="req-icon">🌐</span> Internet connection</li>
+                        </ul>
+                    </div>
+
+                    <div class="sidebar-card versions-card">
+                        <h3 class="sidebar-title">
+                            <span class="title-icon">📦</span>
+                            Available Versions
+                        </h3>
+                        ${currentApp.versions.map((version, index) => `
+                            <div class="version-card ${index === 0 ? 'latest' : ''}">
+                                <div class="version-header">
+                                    <span class="version-number">v${version.version}</span>
+                                    ${index === 0 ? '<span class="latest-badge">Latest</span>' : ''}
+                                </div>
+                                <div class="version-meta">
+                                    <span class="version-date">${version.releaseDate}</span>
+                                    <span class="version-size">${version.size}</span>
+                                </div>
+                                <button class="btn btn-primary download-btn" data-version="${version.version}">
+                                    <span class="btn-icon">⬇️</span>
+                                    Download
+                                </button>
+                            </div>
+                        `).join('')}
                     </div>
                 </div>
-                <textarea id="review-text" placeholder="Share your experience with this app..." rows="4"></textarea>
-                <button id="submit-review" class="btn btn-primary">Submit Review</button>
-            </div>
-            <div class="reviews" id="reviews-list">
-                <!-- Reviews will be loaded here -->
             </div>
         </div>
     `;
@@ -121,7 +177,7 @@ function renderAppDetails() {
     // Add download event listeners
     document.querySelectorAll('.download-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
-            const version = e.target.dataset.version;
+            const version = e.target.dataset.version || e.target.closest('.download-btn').dataset.version;
             showDownloadModal(version);
         });
     });
@@ -135,7 +191,11 @@ function renderAppDetails() {
 function showDownloadModal(version) {
     const modal = document.getElementById('download-modal');
     const modalText = document.getElementById('modal-text');
-    modalText.textContent = `Are you sure you want to download ${currentApp.name} version ${version}?`;
+    modalText.innerHTML = `
+        <div class="modal-icon">📥</div>
+        <div class="modal-title">Confirm Download</div>
+        <div class="modal-description">Are you sure you want to download <strong>${currentApp.name}</strong> version <strong>${version}</strong>?</div>
+    `;
 
     modal.classList.add('show');
 
@@ -155,16 +215,15 @@ function handleDownload(version) {
     // Check weekly download limit
     const downloads = getWeeklyDownloads();
     if (downloads >= 5) { // 5 downloads per week limit
-        alert('You have reached the weekly download limit (5 downloads). Please try again next week.');
+        showNotification('You have reached the weekly download limit (5 downloads). Please try again next week.', 'error');
         return;
     }
 
     // Record download
     recordDownload(version);
 
-    // Simulate download
-    alert(`Downloading ${currentApp.name} version ${version}...`);
-    // In a real app, this would trigger the actual download
+    // Show success notification
+    showNotification(`Downloading ${currentApp.name} version ${version}...`, 'success');
 }
 
 // Get weekly downloads count
@@ -223,16 +282,29 @@ async function recordDownload(version) {
     }
 }
 
+// Show notification
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.innerHTML = `
+        <span class="notification-icon">${type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️'}</span>
+        <span class="notification-text">${message}</span>
+    `;
+    document.body.appendChild(notification);
+
+    // Animate in
+    setTimeout(() => notification.classList.add('show'), 10);
+
+    // Remove after 3 seconds
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
+}
+
 // Back button
 document.getElementById('back-btn')?.addEventListener('click', () => {
     window.location.href = 'dashboard.html';
-});
-
-// User dashboard navigation
-document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('user-dashboard')?.addEventListener('click', () => {
-        window.location.href = 'user-dashboard.html';
-    });
 });
 
 // Review functionality
@@ -263,47 +335,63 @@ async function loadReviews() {
         }
 
         if (reviews.length === 0) {
-            reviewsList.innerHTML = '<p class="no-reviews">No reviews yet. Be the first to review this app!</p>';
+            reviewsList.innerHTML = '<div class="no-reviews"><div class="no-reviews-icon">💭</div><p>No reviews yet. Be the first to review this app!</p></div>';
             return;
         }
 
         reviewsList.innerHTML = reviews.map(review => `
-            <div class="review-item">
+            <div class="review-card">
                 <div class="review-header">
-                    <span class="review-author">${review.author || 'Anonymous'}</span>
-                    <span class="review-rating">${'⭐'.repeat(review.rating)}</span>
+                    <div class="reviewer-info">
+                        <div class="reviewer-avatar">${(review.author || 'Anonymous').charAt(0).toUpperCase()}</div>
+                        <div class="reviewer-details">
+                            <span class="reviewer-name">${review.author || 'Anonymous'}</span>
+                            <div class="review-rating">
+                                ${'⭐'.repeat(review.rating)}
+                                <span class="rating-number">${review.rating}/5</span>
+                            </div>
+                        </div>
+                    </div>
+                    <span class="review-date">${new Date(review.date).toLocaleDateString()}</span>
                 </div>
                 <p class="review-text">${review.text}</p>
-                <small class="review-date">${new Date(review.date).toLocaleDateString()}</small>
             </div>
         `).join('');
     } catch (error) {
         console.error('Error loading reviews:', error);
-        reviewsList.innerHTML = '<p class="error">Failed to load reviews.</p>';
+        reviewsList.innerHTML = '<div class="error">Failed to load reviews.</div>';
     }
 }
 
 // Initialize review form
 function initReviewForm() {
-    // Star rating selection
-    const starsContainer = document.querySelector('.stars');
-    if (starsContainer) {
-        starsContainer.addEventListener('click', (e) => {
-            if (e.target.classList.contains('star')) {
-                selectedRating = parseInt(e.target.dataset.rating);
-                updateStarDisplay();
-            }
+    // Star rating selection - individual event listeners for each star
+    const stars = document.querySelectorAll('.star');
+    stars.forEach((star, index) => {
+        star.addEventListener('click', () => {
+            selectedRating = index + 1;
+            updateStarDisplay();
+            console.log('Star clicked, rating set to:', selectedRating);
         });
-    }
+        star.addEventListener('mouseenter', () => {
+            // Preview rating on hover
+            updateStarDisplay(index + 1);
+        });
+        star.addEventListener('mouseleave', () => {
+            // Reset to selected rating
+            updateStarDisplay(selectedRating);
+        });
+    });
 
     // Submit review
     document.getElementById('submit-review')?.addEventListener('click', submitReview);
 }
 
 // Update star display
-function updateStarDisplay() {
-    document.querySelectorAll('.star').forEach((star, index) => {
-        if (index < selectedRating) {
+function updateStarDisplay(rating = selectedRating) {
+    const stars = document.querySelectorAll('.star');
+    stars.forEach((star, index) => {
+        if (index < rating) {
             star.classList.add('selected');
         } else {
             star.classList.remove('selected');
@@ -316,12 +404,12 @@ async function submitReview() {
     const reviewText = document.getElementById('review-text').value.trim();
 
     if (selectedRating === 0) {
-        alert('Please select a rating.');
+        showNotification('Please select a rating.', 'error');
         return;
     }
 
     if (!reviewText) {
-        alert('Please write a review.');
+        showNotification('Please write a review.', 'error');
         return;
     }
 
@@ -354,10 +442,10 @@ async function submitReview() {
         // Reload reviews
         loadReviews();
 
-        alert('Review submitted successfully!');
+        showNotification('Review submitted successfully!', 'success');
     } catch (error) {
         console.error('Error submitting review:', error);
-        alert('Failed to submit review. Please try again.');
+        showNotification('Failed to submit review. Please try again.', 'error');
     }
 }
 
