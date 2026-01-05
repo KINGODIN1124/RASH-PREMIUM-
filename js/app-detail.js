@@ -212,18 +212,35 @@ function showDownloadModal(version) {
 
 // Handle download
 function handleDownload(version) {
+    // Find version data
+    const versionData = currentApp.versions.find(v => v.version === version);
+
+    if (!versionData || !versionData.downloadUrl) {
+        showNotification('Download link not available.', 'error');
+        return;
+    }
+
     // Check weekly download limit
     const downloads = getWeeklyDownloads();
-    if (downloads >= 5) { // 5 downloads per week limit
-        showNotification('You have reached the weekly download limit (5 downloads). Please try again next week.', 'error');
+    if (downloads >= 5) {
+        showNotification(
+            'You have reached the weekly download limit (5 downloads). Please try again next week.',
+            'error'
+        );
         return;
     }
 
     // Record download
     recordDownload(version);
 
-    // Show success notification
-    showNotification(`Downloading ${currentApp.name} version ${version}...`, 'success');
+    // ✅ START DOWNLOAD (THIS WAS MISSING)
+    window.open(versionData.downloadUrl, '_blank');
+
+    // User feedback
+    showNotification(
+        `Downloading ${currentApp.name} version ${version}...`,
+        'success'
+    );
 }
 
 // Get weekly downloads count
@@ -451,3 +468,4 @@ async function submitReview() {
 
 // Initialize app detail page
 loadAppDetails();
+
