@@ -1,10 +1,12 @@
- [
+[
   {
     "id": "spotify",
     "name": "Spotify Premium",
     "description": "Unlock ad-free music, unlimited skips, and high-quality streaming offline and on the go. Compatible with Android devices.",
     "icon": "images/Spotify.png",
     "category": "Entertainment",
+    "rating": 4.7,
+    "downloads": "2.1M",
     "versions": [
       {
         "version": "8.8.84.516",
@@ -20,6 +22,8 @@
     "description": "Full-featured video editing tool for mobile. Access premium assets, effects, and export high-resolution video without watermarks.",
     "icon": "images/Kinemaster.png",
     "category": "Creative Tools",
+    "rating": 4.5,
+    "downloads": "850K",
     "versions": [
       {
         "version": "7.2.1",
@@ -35,6 +39,8 @@
     "description": "Access exclusive content including sports, movies, and TV shows. No regional restrictions apply.",
     "icon": "images/Hotstar.png",
     "category": "Entertainment",
+    "rating": 4.3,
+    "downloads": "1.8M",
     "versions": [
       {
         "version": "12.0.5",
@@ -50,6 +56,8 @@
     "description": "Premium features unlocked: caller ID without internet, advanced spam blocking, and incognito mode.",
     "icon": "images/truecaller-gold.png",
     "category": "Utility",
+    "rating": 4.6,
+    "downloads": "950K",
     "versions": [
       {
         "version": "13.25.6",
@@ -65,6 +73,8 @@
     "description": "Castle is an all-in-one entertainment app designed for viewers who love watching movies and web series in their preferred language. With a wide collection of international, regional, and trending titles, the Castle app makes it easy to explore content from around the world—dubbed or subtitled in multiple languages for a seamless viewing experience.",
     "icon": "images/Castle.png",
     "category": "Entertainment",
+    "rating": 4.2,
+    "downloads": "675K",
     "versions": [
       {
         "version": "3.1.2",
@@ -80,6 +90,8 @@
     "description": "Ad-free viewing experience and access to region-locked anime and video content with high quality settings.",
     "icon": "images/Bilibili.png",
     "category": "Entertainment",
+    "rating": 4.4,
+    "downloads": "1.2M",
     "versions": [
       {
         "version": "7.5.0",
@@ -95,6 +107,8 @@
     "description": "A high-speed, secure VPN application offering multiple server locations and unlimited bandwidth for anonymous browsing.",
     "icon": "images/proton_vpn.png",
     "category": "Utility",
+    "rating": 4.8,
+    "downloads": "780K",
     "versions": [
       {
         "version": "2.4.0",
