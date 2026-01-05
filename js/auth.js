@@ -17,14 +17,44 @@ auth.onAuthStateChanged((user) => {
 });
 
 // Google Sign In
-document.getElementById('google-login')?.addEventListener('click', () => {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    auth.signInWithPopup(provider).then(() => {
+document.getElementById('google-login')?.addEventListener('click', async () => {
+    try {
+        const provider = new firebase.auth.GoogleAuthProvider();
+        // Add additional scopes if needed
+        provider.addScope('email');
+        provider.addScope('profile');
+
+        const result = await auth.signInWithPopup(provider);
         localStorage.setItem('signin_date', new Date().toLocaleDateString());
-    }).catch((error) => {
+
+        console.log('Google sign in successful:', result.user.displayName);
+    } catch (error) {
         console.error('Google sign in error:', error);
-        alert('Sign in failed. Please try again.');
-    });
+
+        // Provide more specific error messages
+        let errorMessage = 'Sign in failed. ';
+        switch (error.code) {
+            case 'auth/popup-blocked':
+                errorMessage += 'Popup was blocked by browser. Please allow popups and try again.';
+                break;
+            case 'auth/popup-closed-by-user':
+                errorMessage += 'Sign in was cancelled.';
+                break;
+            case 'auth/cancelled-popup-request':
+                errorMessage += 'Another sign in popup is already open.';
+                break;
+            case 'auth/account-exists-with-different-credential':
+                errorMessage += 'Account exists with different sign in method.';
+                break;
+            case 'auth/unauthorized-domain':
+                errorMessage += 'This domain is not authorized for sign in. Please contact support.';
+                break;
+            default:
+                errorMessage += 'Please check your internet connection and try again.';
+        }
+
+        alert(errorMessage);
+    }
 });
 
 // Guest Sign In (Anonymous)
