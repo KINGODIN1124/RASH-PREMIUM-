@@ -146,7 +146,11 @@ function renderAppDetails() {
                             <li><span class="req-icon">🌐</span> Internet connection</li>
                         </ul>
                     </div>
-
+                    <div class="sidebar-card">
+  <h3 class="sidebar-title">📊 Download Status</h3>
+  <p id="downloads-left">Loading…</p>
+  <p id="reset-timer">Loading…</p>
+</div>
                     <div class="sidebar-card versions-card">
                         <h3 class="sidebar-title">
                             <span class="title-icon">📦</span>
@@ -181,6 +185,8 @@ function renderAppDetails() {
             showDownloadModal(version);
         });
     });
+    // 🔥 CALL STATUS UPDATE AFTER UI IS READY
+setTimeout(updateDownloadStatusUI, 300);
 
     // Initialize reviews
     loadReviews();
@@ -277,6 +283,47 @@ async function updateAppStats(appId) {
     totalDownloads: firebase.firestore.FieldValue.increment(1)
   }, { merge: true });
 }
+function getSundayCountdown() {
+  const now = new Date();
+  const sunday = new Date(now);
+  sunday.setDate(now.getDate() + (7 - now.getDay()) % 7);
+  sunday.setHours(0, 0, 0, 0);
+
+  const diff = sunday - now;
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+  const minutes = Math.floor((diff / (1000 * 60)) % 60);
+
+  return `${days}d ${hours}h ${minutes}m`;
+}
+async function updateDownloadStatusUI() {
+  const user = firebase.auth().currentUser;
+  if (!user) return;
+
+  const statusEl = document.getElementById('downloads-left');
+  const timerEl = document.getElementById('reset-timer');
+
+  const permission = await canUserDownload(user);
+  const doc = await db.collection('users').doc(user.uid).get();
+  const used = doc.exists ? doc.data().weeklyDownloads || 0 : 0;
+  const limit = permission.limit;
+
+  const remaining = Math.max(limit - used, 0);
+
+  statusEl.textContent =
+    `Downloads left this week: ${remaining} / ${limit}`;
+
+  timerEl.textContent =
+    `Resets in: ${getSundayCountdown()}`;
+
+  if (remaining === 0) {
+    document.querySelectorAll('.download-btn').forEach(btn => {
+      btn.disabled = true;
+      btn.textContent = 'Limit Reached';
+      btn.classList.add('disabled');
+    });
+  }
+}
 
 // ===============================
 // MAIN DOWNLOAD FUNCTION
@@ -332,6 +379,8 @@ async function handleDownload(version) {
     `Downloading ${currentApp.name} v${version}...`,
     'success'
   );
+    // 🔁 Update UI after download
+setTimeout(updateDownloadStatusUI, 500);
 }
 
 function getWeeklyDownloads() {
@@ -558,6 +607,7 @@ async function submitReview() {
 
 // Initialize app detail page
 loadAppDetails();
+
 
 
 
