@@ -78,10 +78,10 @@ function renderAppDetails() {
                             Screenshots
                         </h2>
                         <div class="screenshots-grid">
-                            <img src="https://via.placeholder.com/300x600/333/fff?text=Screenshot+1" alt="Screenshot 1" loading="lazy" class="screenshot">
-                            <img src="https://via.placeholder.com/300x600/333/fff?text=Screenshot+2" alt="Screenshot 2" loading="lazy" class="screenshot">
-                            <img src="https://via.placeholder.com/300x600/333/fff?text=Screenshot+3" alt="Screenshot 3" loading="lazy" class="screenshot">
-                            <img src="https://via.placeholder.com/300x600/333/fff?text=Screenshot+4" alt="Screenshot 4" loading="lazy" class="screenshot">
+                            <img src="screenshot/screenshot1" alt="Screenshot 1" loading="lazy" class="screenshot">
+                            <img src="screenshot/screenshot2" alt="Screenshot 2" loading="lazy" class="screenshot">
+                            <img src="screenshot/screenshot3" alt="Screenshot 3" loading="lazy" class="screenshot">
+                            <img src="screenshot/screenshot4" alt="Screenshot 4" loading="lazy" class="screenshot">
                         </div>
                     </section>
 
@@ -227,7 +227,10 @@ async function canUserDownload(user) {
 
   // Guest user
   if (user.isAnonymous) {
-    const joinedAt = new Date(user.metadata.creationTime);
+    const joinedAt = user.metadata.creationTime
+  ? new Date(user.metadata.creationTime)
+  : new Date();
+      
     const hoursPassed =
       (Date.now() - joinedAt.getTime()) / (1000 * 60 * 60);
 
@@ -545,6 +548,7 @@ async function submitReview() {
 
 // Initialize app detail page
 loadAppDetails();
+
 
 
 
