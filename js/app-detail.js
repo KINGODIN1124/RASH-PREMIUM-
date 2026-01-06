@@ -209,11 +209,9 @@ function showDownloadModal(version) {
         modal.classList.remove('show');
     };
 }
-
-
-
-// Get weekly downloads count
-fun// 2️⃣ HELPER FUNCTIONS (PUT THEM HERE 👇)
+// ===============================
+// HELPER FUNCTIONS
+// ===============================
 
 // Week reset (Sunday)
 function getWeekStartSunday() {
@@ -234,7 +232,10 @@ async function canUserDownload(user) {
       (Date.now() - joinedAt.getTime()) / (1000 * 60 * 60);
 
     if (hoursPassed < 24) {
-      return { allowed: false, reason: 'Guest users can download after 24 hours.' };
+      return {
+        allowed: false,
+        reason: 'Guest users can download after 24 hours.'
+      };
     }
 
     return { allowed: true, limit: 1, weekStart };
@@ -272,12 +273,14 @@ async function updateAppStats(appId) {
   }, { merge: true });
 }
 
-// 3️⃣ MAIN DOWNLOAD FUNCTION (AFTER HELPERS)
+// ===============================
+// MAIN DOWNLOAD FUNCTION
+// ===============================
 async function handleDownload(version) {
   const user = firebase.auth().currentUser;
   const versionData = currentApp.versions.find(v => v.version === version);
 
-  if (!versionData) {
+  if (!versionData || !versionData.downloadUrl) {
     showNotification('Download link not available.', 'error');
     return;
   }
@@ -309,13 +312,16 @@ async function handleDownload(version) {
     date: new Date().toISOString()
   });
 
+  // ✅ REAL DOWNLOAD
   window.location.href = versionData.downloadUrl;
 
   showNotification(
     `Downloading ${currentApp.name} v${version}...`,
     'success'
   );
-}ction getWeeklyDownloads() {
+}
+
+function getWeeklyDownloads() {
     const now = new Date();
     const weekStart = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay());
     const key = `downloads_${weekStart.toISOString().split('T')[0]}`;
@@ -539,5 +545,6 @@ async function submitReview() {
 
 // Initialize app detail page
 loadAppDetails();
+
 
 
