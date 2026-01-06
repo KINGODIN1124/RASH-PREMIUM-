@@ -257,7 +257,9 @@ async function updateUserDownloads(user) {
   if (!doc.exists || doc.data().weekStart !== weekStart) {
     await userRef.set({
       isGuest: user.isAnonymous,
-      joinedAt: firebase.firestore.FieldValue.serverTimestamp(),
+      joinedAt: user.metadata.creationTime
+  ? new Date(user.metadata.creationTime)
+  : firebase.firestore.FieldValue.serverTimestamp(),
       weeklyDownloads: 1,
       weekStart
     }, { merge: true });
@@ -548,6 +550,7 @@ async function submitReview() {
 
 // Initialize app detail page
 loadAppDetails();
+
 
 
 
