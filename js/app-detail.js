@@ -290,14 +290,16 @@ async function handleDownload(version) {
     return;
   }
 
+  // Permission check
   const permission = await canUserDownload(user);
   if (!permission.allowed) {
     showNotification(permission.reason, 'error');
     return;
   }
 
-  const userDoc = await db.collection('users').doc(user.uid).get();
-  const used = userDoc.exists ? userDoc.data().weeklyDownloads || 0 : 0;
+  const userRef = db.collection('users').doc(user.uid);
+  const snap = await userRef.get();
+  const used = snap.exists ? snap.data().weeklyDownloads || 0 : 0;
 
   if (used >= permission.limit) {
     showNotification(
@@ -307,18 +309,24 @@ async function handleDownload(version) {
     return;
   }
 
-  await updateUserDownloads(user);
-  await updateAppStats(currentApp.id);
+  // ✅ OPEN DOWNLOAD IMMEDIATELY (CRITICAL FIX)
+  const win = window.open(versionData.downloadUrl, '_blank');
 
-  await db.collection('downloads').add({
+  if (!win) {
+    // fallback for strict mobile browsers
+    window.location.href = versionData.downloadUrl;
+  }
+
+  // 🔄 Update stats AFTER redirect attempt
+  updateUserDownloads(user);
+  updateAppStats(currentApp.id);
+
+  db.collection('downloads').add({
     userId: user.uid,
     appId: currentApp.id,
     version,
     date: new Date().toISOString()
   });
-
-  // ✅ REAL DOWNLOAD
-  window.location.href = versionData.downloadUrl;
 
   showNotification(
     `Downloading ${currentApp.name} v${version}...`,
@@ -550,6 +558,7 @@ async function submitReview() {
 
 // Initialize app detail page
 loadAppDetails();
+
 
 
 
