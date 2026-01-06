@@ -210,41 +210,112 @@ function showDownloadModal(version) {
     };
 }
 
-// Handle download
-function handleDownload(version) {
-    // Find version data
-    const versionData = currentApp.versions.find(v => v.version === version);
 
-    if (!versionData || !versionData.downloadUrl) {
-        showNotification('Download link not available.', 'error');
-        return;
-    }
-
-    // Check weekly download limit
-    const downloads = getWeeklyDownloads();
-    if (downloads >= 5) {
-        showNotification(
-            'You have reached the weekly download limit (5 downloads). Please try again next week.',
-            'error'
-        );
-        return;
-    }
-
-    // Record download
-    recordDownload(version);
-
-    // ✅ START DOWNLOAD (THIS WAS MISSING)
-    window.open(versionData.downloadUrl, '_blank');
-
-    // User feedback
-    showNotification(
-        `Downloading ${currentApp.name} version ${version}...`,
-        'success'
-    );
-}
 
 // Get weekly downloads count
-function getWeeklyDownloads() {
+fun// 2️⃣ HELPER FUNCTIONS (PUT THEM HERE 👇)
+
+// Week reset (Sunday)
+function getWeekStartSunday() {
+  const now = new Date();
+  const sunday = new Date(now);
+  sunday.setDate(now.getDate() - now.getDay());
+  return sunday.toISOString().split('T')[0];
+}
+
+// Check permission & limits
+async function canUserDownload(user) {
+  const weekStart = getWeekStartSunday();
+
+  // Guest user
+  if (user.isAnonymous) {
+    const joinedAt = new Date(user.metadata.creationTime);
+    const hoursPassed =
+      (Date.now() - joinedAt.getTime()) / (1000 * 60 * 60);
+
+    if (hoursPassed < 24) {
+      return { allowed: false, reason: 'Guest users can download after 24 hours.' };
+    }
+
+    return { allowed: true, limit: 1, weekStart };
+  }
+
+  // Google user
+  return { allowed: true, limit: 2, weekStart };
+}
+
+// Update user weekly downloads
+async function updateUserDownloads(user) {
+  const userRef = db.collection('users').doc(user.uid);
+  const doc = await userRef.get();
+  const weekStart = getWeekStartSunday();
+
+  if (!doc.exists || doc.data().weekStart !== weekStart) {
+    await userRef.set({
+      isGuest: user.isAnonymous,
+      joinedAt: firebase.firestore.FieldValue.serverTimestamp(),
+      weeklyDownloads: 1,
+      weekStart
+    }, { merge: true });
+  } else {
+    await userRef.update({
+      weeklyDownloads: firebase.firestore.FieldValue.increment(1)
+    });
+  }
+}
+
+// Update app stats
+async function updateAppStats(appId) {
+  const appRef = db.collection('apps').doc(appId);
+  await appRef.set({
+    totalDownloads: firebase.firestore.FieldValue.increment(1)
+  }, { merge: true });
+}
+
+// 3️⃣ MAIN DOWNLOAD FUNCTION (AFTER HELPERS)
+async function handleDownload(version) {
+  const user = firebase.auth().currentUser;
+  const versionData = currentApp.versions.find(v => v.version === version);
+
+  if (!versionData) {
+    showNotification('Download link not available.', 'error');
+    return;
+  }
+
+  const permission = await canUserDownload(user);
+  if (!permission.allowed) {
+    showNotification(permission.reason, 'error');
+    return;
+  }
+
+  const userDoc = await db.collection('users').doc(user.uid).get();
+  const used = userDoc.exists ? userDoc.data().weeklyDownloads || 0 : 0;
+
+  if (used >= permission.limit) {
+    showNotification(
+      `Weekly limit reached (${permission.limit}). Resets on Sunday.`,
+      'error'
+    );
+    return;
+  }
+
+  await updateUserDownloads(user);
+  await updateAppStats(currentApp.id);
+
+  await db.collection('downloads').add({
+    userId: user.uid,
+    appId: currentApp.id,
+    version,
+    date: new Date().toISOString()
+  });
+
+  window.location.href = versionData.downloadUrl;
+
+  showNotification(
+    `Downloading ${currentApp.name} v${version}...`,
+    'success'
+  );
+}ction getWeeklyDownloads() {
     const now = new Date();
     const weekStart = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay());
     const key = `downloads_${weekStart.toISOString().split('T')[0]}`;
@@ -468,4 +539,5 @@ async function submitReview() {
 
 // Initialize app detail page
 loadAppDetails();
+
 
