@@ -13,20 +13,43 @@
     <script src="js/dashboard.js" defer></script>
 </head>
 <body>
-    <header>
-        <div class="header-content">
-            <h1>RASH MODS</h1>
-            <div class="header-controls">
-                <input type="text" id="search" placeholder="Search apps...">
-                <button id="theme-toggle" class="btn-icon">🌙</button>
-                <button id="logout" class="btn">Logout</button>
-            </div>
-        </div>
+    <header class="dashboard-header">
+  <div class="header-content">
+    <div class="brand-block">
+      <h1 class="brand-name">RASH MODS</h1>
+      <p class="brand-tagline">
+        Owner-Managed Premium App Platform
+      </p>
+    </div>
+
+    <!-- OWNER BADGE -->
+    <div id="owner-badge" class="owner-badge" style="display:none">
+      👑 Owner Account
+    </div>
+
+    <div class="header-controls">
+      <input type="text" id="search" placeholder="Search premium apps...">
+      <button id="theme-toggle" class="btn-icon">🌙</button>
+      <button id="logout" class="btn">Logout</button>
+    </div>
+  </div>
     </header>
+    <div class="announcement">
+  🚀 New premium apps added this week · Download limits reset every Sunday
+    </div>
     <main>
-        <div id="apps-container" class="apps-sections">
-            <!-- Apps will be loaded here -->
-        </div>
+  <div id="apps-container" class="apps-sections">
+    <!-- Premium apps will be loaded here -->
+  </div>
     </main>
+    <footer class="dashboard-footer">
+  <p>
+    🔒 Secured by Firebase · 📊 All downloads are monitored · ⚠️ Abuse prevention enabled
+  </p>
+  <p>
+    © 2026 <strong>RASH MODS</strong>. All rights reserved.
+  </p>
+    </footer>
 </body>
 </html>
+
