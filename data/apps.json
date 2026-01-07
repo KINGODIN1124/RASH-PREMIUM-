@@ -1,5 +1,22 @@
 [
   {
+    "id": "mx-player",
+    "name": "MX Player Premium",
+    "description": "MX Player Gold is a premium subscription that offers ad-free entertainment, high-quality streaming, offline downloads, and uninterrupted access to movies, shows, and videos..",
+    "icon": "images/mx-player.png",
+    "category": "Entertainment",
+    "rating": 4.1,
+    "downloads": "1.1M",
+    "versions": [
+      {
+        "version": "2.5.4",
+        "releaseDate": "2026-01-07",
+        "size": "120 MB",
+        "downloadUrl": "https://link-hub.net/1425230/82qVrFN37e3o"
+      }
+    ]
+  },
+  {
     "id": "spotify",
     "name": "Spotify Premium",
     "description": "Unlock ad-free music, unlimited skips, and high-quality streaming offline and on the go. Compatible with Android devices.",
