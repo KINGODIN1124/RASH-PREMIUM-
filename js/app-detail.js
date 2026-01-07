@@ -468,70 +468,73 @@ let selectedRating = 0;
 
 // Load reviews for this app
 async function loadReviews() {
-    const user = firebase.auth().currentUser;
-    const reviewsList = document.getElementById('reviews-list');
+  const reviewsList = document.getElementById('reviews-list');
+  reviewsList.innerHTML = 'Loading reviews...';
 
-    try {
-        let reviews = [];
+  try {
+    const querySnapshot = await db
+      .collection('reviews')
+      .where('appId', '==', appId)
+      .get();
 
-        if (user) {
-            // Load from Firestore for logged-in users
-            const querySnapshot = await db.collection('reviews')
-                .where('appId', '==', appId)
-                .get();
+    let reviews = [];
 
-            querySnapshot.forEach((doc) => {
-  reviews.push({
-    id: doc.id,        // 🔑 IMPORTANT
-    ...doc.data()
-  });
-});
-            // ✅ FIX 2: Sort reviews by latest first
-reviews.sort((a, b) => new Date(b.date) - new Date(a.date));
-        } else {
-            // Load from localStorage for guests
-            reviews = JSON.parse(localStorage.getItem(`reviews_${appId}`) || '[]');
-            reviews.sort((a, b) => new Date(b.date) - new Date(a.date));
-        }
+    querySnapshot.forEach(doc => {
+      reviews.push({
+        id: doc.id,
+        ...doc.data()
+      });
+    });
+            // Sort latest first
+    reviews.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-        if (reviews.length === 0) {
-            reviewsList.innerHTML = '<div class="no-reviews"><div class="no-reviews-icon">💭</div><p>No reviews yet. Be the first to review this app!</p></div>';
-            return;
-        }
+    if (reviews.length === 0) {
+      reviewsList.innerHTML = `
+        <div class="no-reviews">
+          <div class="no-reviews-icon">💭</div>
+          <p>No reviews yet. Be the first to review this app!</p>
+        </div>
+      `;
+      return;
+    }
+
+    const currentUser = firebase.auth().currentUser;
         reviewsList.innerHTML = reviews.map(review => `
-  <div class="review-card">
-    <div class="review-header">
-      <div class="reviewer-info">
-        <div class="reviewer-avatar">
-          ${(review.author || 'U')[0].toUpperCase()}
-        </div>
-        <div>
-          <strong>${review.author}</strong>
-          <div class="review-rating">
-            ${'⭐'.repeat(review.rating)}
+      <div class="review-card">
+        <div class="review-header">
+          <div class="reviewer-info">
+            <div class="reviewer-avatar">
+              ${(review.author || 'U')[0].toUpperCase()}
+            </div>
+            <div>
+              <strong>${review.author}</strong>
+              <div class="review-rating">
+                ${'⭐'.repeat(review.rating)}
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
 
       ${
-        firebase.auth().currentUser?.uid === review.userId
-          ? `
-            <div class="review-actions">
-              <button onclick="editReview('${review.id}', '${review.text.replace(/'/g, "\\'")}', ${review.rating})">✏️</button>
-              <button onclick="deleteReview('${review.id}')">🗑</button>
-            </div>
-          `
-          : ''
-      }
-    </div>
+            currentUser?.uid === review.userId
+              ? `
+                <div class="review-actions">
+                  <button onclick="editReview('${review.id}', '${review.text.replace(/'/g, "\\'")}', ${review.rating})">✏️</button>
+                  <button onclick="deleteReview('${review.id}')">🗑</button>
+                </div>
+              `
+              : ''
+          }
+        </div>
 
     <p class="review-text">${review.text}</p>
-  </div>
-`).join('');
-    } catch (error) {
-        console.error('Error loading reviews:', error);
-        reviewsList.innerHTML = '<div class="error">Failed to load reviews.</div>';
-    }
+      </div>
+    `).join('');
+
+  } catch (error) {
+    console.error('Error loading reviews:', error);
+    reviewsList.innerHTML =
+      '<div class="error">Failed to load reviews.</div>';
+  }
 }
 
 // Initialize review form
@@ -661,5 +664,6 @@ async function deleteReview(reviewId) {
 
 // Initialize app detail page
 loadAppDetails();
+
 
 
