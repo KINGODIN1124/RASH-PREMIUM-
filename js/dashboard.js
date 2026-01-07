@@ -3,6 +3,18 @@ let apps = [];
 let filteredApps = [];
 let currentSlides = {};
 
+// 👑 OWNER BADGE LOGIC
+firebase.auth().onAuthStateChanged(user => {
+    if (!user) return;
+
+    const OWNER_EMAIL = 'tripathi.shashwat133@gmail.com'; // 🔴 change this
+
+    if (user.email === OWNER_EMAIL) {
+        const badge = document.getElementById('owner-badge');
+        if (badge) badge.style.display = 'block';
+    }
+});
+
 // Load apps data
 async function loadApps() {
     try {
@@ -82,7 +94,10 @@ function renderDashboard(categories) {
                         <div class="app-card" data-app-id="${app.id}" style="animation-delay: ${appIndex * 0.1}s">
                             <img src="${app.icon}" alt="${app.name}" class="app-icon" loading="lazy">
                             <div class="app-info">
-                                <h3>${app.name}</h3>
+                                <h3>
+    ${app.name}
+    ${app.verified ? '<span class="verified-badge">✔</span>' : ''}
+</h3>
                                 <p>${app.description}</p>
                                 <div class="app-meta">
                                     <span class="rating">⭐ ${app.rating}</span>
@@ -222,8 +237,27 @@ document.getElementById('search')?.addEventListener('input', (e) => {
 
         section.style.display = hasVisibleApps ? 'block' : 'none';
     });
-});
+    // Check if any category is still visible
+const anyVisible = Array.from(
+    document.querySelectorAll('.category-section')
+).some(section => section.style.display !== 'none');
 
+showNoResultsMessage(!anyVisible);
+});
+// Show / hide "no results" message
+function showNoResultsMessage(show) {
+    let msg = document.getElementById('no-results-message');
+
+    if (!msg) {
+        msg = document.createElement('div');
+        msg.id = 'no-results-message';
+        msg.className = 'no-results';
+        msg.textContent = 'No premium apps match your search.';
+        document.getElementById('apps-container').appendChild(msg);
+    }
+
+    msg.style.display = show ? 'block' : 'none';
+}
 // Open app detail page
 function openAppDetail(appId) {
     window.location.href = `app-detail.html?id=${appId}`;
@@ -241,4 +275,13 @@ document.addEventListener('DOMContentLoaded', () => {
             <h3>Loading Premium Apps...</h3>
         </div>
     `;
+});
+// 🔒 LOGOUT HANDLER
+document.getElementById('logout')?.addEventListener('click', async () => {
+    try {
+        await firebase.auth().signOut();
+        window.location.href = 'index.html';
+    } catch (err) {
+        console.error('Logout failed:', err);
+    }
 });
