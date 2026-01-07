@@ -47,6 +47,7 @@ function renderDashboard(categories) {
     // Add welcome section
     const welcomeSection = document.createElement('div');
     welcomeSection.className = 'welcome-section';
+    welcomeSection.id = 'welcome-section';
     welcomeSection.innerHTML = `
         <div class="welcome-content">
             <h2 class="welcome-title">Welcome to <span class="highlight">RASH MODS</span></h2>
@@ -207,6 +208,8 @@ function updateSliderButtons(category) {
 // Search functionality
 document.getElementById('search')?.addEventListener('input', (e) => {
     const query = e.target.value.toLowerCase().trim();
+    const isSearching = e.target.value.trim() !== '';
+toggleSearchUI(isSearching);
 
     if (query === '') {
         // Show all categories
@@ -244,6 +247,13 @@ const anyVisible = Array.from(
 
 showNoResultsMessage(!anyVisible);
 });
+function toggleSearchUI(isSearching) {
+    const banner = document.getElementById('announcement-banner');
+    const welcome = document.getElementById('welcome-section');
+
+    if (banner) banner.style.display = isSearching ? 'none' : 'block';
+    if (welcome) welcome.style.display = isSearching ? 'none' : 'block';
+}
 // Show / hide "no results" message
 function showNoResultsMessage(show) {
     let msg = document.getElementById('no-results-message');
@@ -285,3 +295,4 @@ document.getElementById('logout')?.addEventListener('click', async () => {
         console.error('Logout failed:', err);
     }
 });
+
