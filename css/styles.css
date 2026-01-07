@@ -1308,3 +1308,19 @@ header {
 .dashboard-footer p {
   margin: 6px 0;
 }
+/* =========================
+   ANNOUNCEMENT ANIMATION
+========================= */
+.announcement {
+  transition: 
+    transform 0.35s ease,
+    opacity 0.35s ease;
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.announcement.hidden {
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+}
