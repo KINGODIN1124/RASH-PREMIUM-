@@ -571,6 +571,14 @@ async function submitReview() {
     }
 
     const user = firebase.auth().currentUser;
+
+if (!user || user.isAnonymous) {
+  showNotification(
+    'Please sign in with Google to submit a review.',
+    'error'
+  );
+  return;
+}
     const review = {
         author: user?.displayName || user?.email || 'Anonymous',
         rating: selectedRating,
@@ -584,11 +592,6 @@ async function submitReview() {
         if (user) {
             // Save to Firestore for logged-in users
             await db.collection('reviews').add(review);
-        } else {
-            // Save to localStorage for guests
-            const reviews = JSON.parse(localStorage.getItem(`reviews_${appId}`) || '[]');
-            reviews.push(review);
-            localStorage.setItem(`reviews_${appId}`, JSON.stringify(reviews));
         }
 
         // Clear form
@@ -611,3 +614,4 @@ async function submitReview() {
 
 // Initialize app detail page
 loadAppDetails();
+
