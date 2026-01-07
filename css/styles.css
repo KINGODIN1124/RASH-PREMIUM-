@@ -1268,3 +1268,10 @@ header {
     padding: 40px;
     color: var(--error-color);
 }
+.review-actions button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-left: 6px;
+  font-size: 14px;
+}
