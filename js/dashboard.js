@@ -3,15 +3,21 @@ let apps = [];
 let filteredApps = [];
 let currentSlides = {};
 
-// 👑 OWNER BADGE LOGIC
+// 👑 OWNER BADGE + 🔔 PUSH NOTIFICATIONS
 firebase.auth().onAuthStateChanged(user => {
     if (!user) return;
 
-    const OWNER_EMAIL = 'tripathi.shashwat133@gmail.com'; // 🔴 change this
+    // 👑 OWNER BADGE
+    const OWNER_EMAIL = 'tripathi.shashwat133@gmail.com';
 
     if (user.email === OWNER_EMAIL) {
         const badge = document.getElementById('owner-badge');
         if (badge) badge.style.display = 'block';
+    }
+
+    // 🔔 ENABLE PHONE NOTIFICATIONS (STEP 4)
+    if (typeof initPushNotifications === 'function') {
+        initPushNotifications();
     }
 });
 
@@ -295,4 +301,5 @@ document.getElementById('logout')?.addEventListener('click', async () => {
         console.error('Logout failed:', err);
     }
 });
+
 
