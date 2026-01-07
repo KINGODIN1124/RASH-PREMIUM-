@@ -1275,3 +1275,36 @@ header {
   margin-left: 6px;
   font-size: 14px;
 }
+/* =========================
+   ANNOUNCEMENT BANNER
+========================= */
+.announcement {
+  width: 100%;
+  background: linear-gradient(90deg, #1f2937, #111827);
+  color: #f9fafb;
+  text-align: center;
+  padding: 14px 20px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+/* =========================
+   DASHBOARD FOOTER
+========================= */
+.dashboard-footer {
+  margin-top: 80px;              /* pushes it away from content */
+  padding: 30px 20px;
+  background: #0b0f19;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  text-align: center;
+  color: #9ca3af;
+  font-size: 0.85rem;
+}
+
+.dashboard-footer p {
+  margin: 6px 0;
+}
