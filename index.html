@@ -1,31 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RASH MODS - Login</title>
-    <link rel="stylesheet" href="css/styles.css">
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    <script src="js/firebase-config.js"></script>
-    <script src="js/auth.js" defer></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RASH MODS — Secure Access</title>
+
+  <link rel="stylesheet" href="css/styles.css" />
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+
+  <script src="js/firebase-config.js"></script>
+  <script src="js/auth.js" defer></script>
 </head>
+
 <body>
-    <div class="container">
-        <div class="login-card">
-            <h1>RASH MODS</h1>
-            <p>Access curated premium mobile apps with exclusive features</p>
-            <div class="features">
-                <div class="feature-item">🔒 Secure Authentication</div>
-                <div class="feature-item">📱 Mobile-Optimized</div>
-                <div class="feature-item">🌙 Dark/Light Mode</div>
-                <div class="feature-item">⚡ Fast Downloads</div>
-                <div class="feature-item">🎯 Curated Selection</div>
-            </div>
-            <button id="google-login" class="btn btn-primary">Sign in with Google</button>
-            <button id="guest-login" class="btn btn-secondary">Continue as Guest</button>
-            <p class="login-note">Guest users have limited download access</p>
-        </div>
+  <div class="container">
+    <div class="login-card">
+
+      <!-- BRANDING -->
+      <h1 class="brand-name">RASH MODS</h1>
+      <p class="brand-tagline">
+        Premium Apps · Trusted Access · Owner-Managed Platform
+      </p>
+
+      <!-- VALUE POINTS -->
+      <div class="features">
+        <div class="feature-item">🔒 Secure Authentication</div>
+        <div class="feature-item">📱 Mobile-Optimized Platform</div>
+        <div class="feature-item">⚡ Fast & Tracked Downloads</div>
+        <div class="feature-item">✔ Curated & Verified Apps</div>
+        <div class="feature-item">📊 Abuse Monitoring Enabled</div>
+      </div>
+
+      <!-- PRIMARY CTA -->
+      <button id="google-login" class="btn btn-primary">
+        Continue with Google (Recommended)
+      </button>
+
+      <!-- SECONDARY CTA -->
+      <button id="guest-login" class="btn btn-secondary">
+        Continue as Guest (Limited Access)
+      </button>
+
+      <p class="login-note">
+        Guest access is restricted.  
+        Sign in with Google for full platform features.
+      </p>
+
+      <!-- TRUST SIGNAL -->
+      <div class="security-note">
+        🔐 Secured by Firebase · 📊 Downloads Monitored · ⚠️ Abuse Prevention Enabled
+      </div>
     </div>
+
+    <!-- FOOTER -->
+    <footer class="login-footer">
+      © 2026 <strong>RASH MODS</strong>. All rights reserved.
+    </footer>
+  </div>
 </body>
 </html>
