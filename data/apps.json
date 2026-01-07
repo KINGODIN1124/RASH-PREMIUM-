@@ -7,6 +7,7 @@
     "category": "Entertainment",
     "rating": 4.1,
     "downloads": "1.1M",
+    "verified": true,
     "versions": [
       {
         "version": "2.5.4",
@@ -24,6 +25,7 @@
     "category": "Entertainment",
     "rating": 4.7,
     "downloads": "2.1M",
+    "verified": true,
     "versions": [
       {
         "version": "8.8.84.516",
@@ -41,6 +43,7 @@
     "category": "Creative Tools",
     "rating": 4.5,
     "downloads": "850K",
+    "verified": true,
     "versions": [
       {
         "version": "7.2.1",
@@ -58,6 +61,7 @@
     "category": "Entertainment",
     "rating": 4.3,
     "downloads": "1.8M",
+    "verified": true,
     "versions": [
       {
         "version": "12.0.5",
@@ -75,6 +79,7 @@
     "category": "Utility",
     "rating": 4.6,
     "downloads": "950K",
+    "verified": true,
     "versions": [
       {
         "version": "16.8.6",
@@ -98,6 +103,7 @@
     "category": "Entertainment",
     "rating": 4.2,
     "downloads": "675K",
+    "verified": true,
     "versions": [
       {
         "version": "3.1.6",
@@ -138,6 +144,7 @@
     "category": "Utility",
     "rating": 4.8,
     "downloads": "780K",
+    "verified": true,
     "versions": [
       {
         "version": "2.4.0",
