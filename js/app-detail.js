@@ -478,12 +478,13 @@ async function loadReviews() {
             // Load from Firestore for logged-in users
             const querySnapshot = await db.collection('reviews')
                 .where('appId', '==', appId)
-                .orderBy('date', 'desc')
                 .get();
 
             querySnapshot.forEach((doc) => {
                 reviews.push(doc.data());
             });
+            // ✅ FIX 2: Sort reviews by latest first
+reviews.sort((a, b) => new Date(b.date) - new Date(a.date));
         } else {
             // Load from localStorage for guests
             reviews = JSON.parse(localStorage.getItem(`reviews_${appId}`) || '[]');
@@ -601,16 +602,12 @@ async function submitReview() {
         showNotification('Review submitted successfully!', 'success');
     } catch (error) {
         console.error('Error submitting review:', error);
-        showNotification('Failed to submit review. Please try again.', 'error');
+        showNotification(
+  'Review failed. Please check your internet connection.',
+  'error'
+);
     }
 }
 
 // Initialize app detail page
 loadAppDetails();
-
-
-
-
-
-
-
