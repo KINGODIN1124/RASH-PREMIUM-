@@ -481,8 +481,11 @@ async function loadReviews() {
                 .get();
 
             querySnapshot.forEach((doc) => {
-                reviews.push(doc.data());
-            });
+  reviews.push({
+    id: doc.id,        // 🔑 IMPORTANT
+    ...doc.data()
+  });
+});
             // ✅ FIX 2: Sort reviews by latest first
 reviews.sort((a, b) => new Date(b.date) - new Date(a.date));
         } else {
@@ -495,25 +498,36 @@ reviews.sort((a, b) => new Date(b.date) - new Date(a.date));
             reviewsList.innerHTML = '<div class="no-reviews"><div class="no-reviews-icon">💭</div><p>No reviews yet. Be the first to review this app!</p></div>';
             return;
         }
-
         reviewsList.innerHTML = reviews.map(review => `
-            <div class="review-card">
-                <div class="review-header">
-                    <div class="reviewer-info">
-                        <div class="reviewer-avatar">${(review.author || 'Anonymous').charAt(0).toUpperCase()}</div>
-                        <div class="reviewer-details">
-                            <span class="reviewer-name">${review.author || 'Anonymous'}</span>
-                            <div class="review-rating">
-                                ${'⭐'.repeat(review.rating)}
-                                <span class="rating-number">${review.rating}/5</span>
-                            </div>
-                        </div>
-                    </div>
-                    <span class="review-date">${new Date(review.date).toLocaleDateString()}</span>
-                </div>
-                <p class="review-text">${review.text}</p>
+  <div class="review-card">
+    <div class="review-header">
+      <div class="reviewer-info">
+        <div class="reviewer-avatar">
+          ${(review.author || 'U')[0].toUpperCase()}
+        </div>
+        <div>
+          <strong>${review.author}</strong>
+          <div class="review-rating">
+            ${'⭐'.repeat(review.rating)}
+          </div>
+        </div>
+      </div>
+
+      ${
+        firebase.auth().currentUser?.uid === review.userId
+          ? `
+            <div class="review-actions">
+              <button onclick="editReview('${review.id}', '${review.text.replace(/'/g, "\\'")}', ${review.rating})">✏️</button>
+              <button onclick="deleteReview('${review.id}')">🗑</button>
             </div>
-        `).join('');
+          `
+          : ''
+      }
+    </div>
+
+    <p class="review-text">${review.text}</p>
+  </div>
+`).join('');
     } catch (error) {
         console.error('Error loading reviews:', error);
         reviewsList.innerHTML = '<div class="error">Failed to load reviews.</div>';
@@ -612,6 +626,40 @@ if (!user || user.isAnonymous) {
     }
 }
 
+async function editReview(reviewId, text, rating) {
+  const newText = prompt('Edit your review:', text);
+  if (!newText || !newText.trim()) return;
+
+  try {
+    await db.collection('reviews').doc(reviewId).update({
+      text: newText.trim(),
+      rating: rating,
+      date: new Date().toISOString()
+    });
+
+    showNotification('Review updated successfully!', 'success');
+    loadReviews();
+  } catch (error) {
+    console.error(error);
+    showNotification('Failed to update review.', 'error');
+  }
+}
+
+async function deleteReview(reviewId) {
+  const confirmDelete = confirm('Delete this review permanently?');
+  if (!confirmDelete) return;
+
+  try {
+    await db.collection('reviews').doc(reviewId).delete();
+    showNotification('Review deleted.', 'success');
+    loadReviews();
+  } catch (error) {
+    console.error(error);
+    showNotification('Failed to delete review.', 'error');
+  }
+}
+
 // Initialize app detail page
 loadAppDetails();
+
 
