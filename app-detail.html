@@ -28,15 +28,21 @@
             <!-- App details will be loaded here -->
         </div>
     </main>
-    <div id="download-modal" class="modal">
-        <div class="modal-content">
-            <h2>Confirm Download</h2>
-            <p id="modal-text">Are you sure you want to download this version?</p>
-            <div class="modal-buttons">
-                <button id="confirm-download" class="btn btn-primary">Download</button>
-                <button id="cancel-download" class="btn btn-secondary">Cancel</button>
-            </div>
-        </div>
+    <!-- DOWNLOAD CONFIRMATION MODAL -->
+<div id="download-modal" class="modal">
+  <div class="modal-content">
+    <div id="modal-text"></div>
+
+    <div class="modal-actions">
+      <button id="confirm-download" class="btn btn-primary">
+        Yes, Download
+      </button>
+      <button id="cancel-download" class="btn btn-secondary">
+        Cancel
+      </button>
     </div>
+  </div>
+</div>
 </body>
 </html>
+
