@@ -1,21 +1,6 @@
 // Authentication logic
 const auth = firebase.auth();
 
-// Check if user is logged in
-auth.onAuthStateChanged((user) => {
-    if (user) {
-        // User is signed in
-        if (window.location.pathname.includes('index.html') || window.location.pathname === '/' || window.location.pathname.endsWith('/PremiumHub/')) {
-            window.location.href = 'dashboard.html';
-        }
-    } else {
-        // User is signed out
-        if (!window.location.pathname.includes('index.html') && !window.location.pathname === '/' && !window.location.pathname.endsWith('/PremiumHub/')) {
-            window.location.href = 'index.html';
-        }
-    }
-});
-
 // Google Sign In
 document.getElementById('google-login')?.addEventListener('click', async () => {
     try {
@@ -95,6 +80,3 @@ function updateThemeIcon() {
         toggle.textContent = document.body.classList.contains('light-mode') ? '☀️' : '🌙';
     }
 }
-
-
-
