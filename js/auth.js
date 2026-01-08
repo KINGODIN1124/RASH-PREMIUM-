@@ -4,41 +4,6 @@ const auth = firebase.auth();
 const MAINTENANCE_MODE = true; // 🔴 toggle ON/OFF
 const OWNER_EMAIL = 'tripathi.shashwat133@gmail.com';
 
-firebase.auth().onAuthStateChanged(user => {
-  const path = window.location.pathname;
-
-  // 🔧 Maintenance mode routing
-  if (MAINTENANCE_MODE) {
-    if (
-      user &&
-      user.email === OWNER_EMAIL &&
-      user.emailVerified
-    ) {
-      // Owner allowed
-      if (!path.includes('dashboard.html')) {
-        window.location.replace('dashboard.html');
-      }
-    } else {
-      // Everyone else → maintenance
-      if (!path.includes('maintenance.html')) {
-        window.location.replace('maintenance.html');
-      }
-    }
-    return;
-  }
-
-  // 🔓 Normal mode routing
-  if (user) {
-    if (path.includes('index.html') || path === '/') {
-      window.location.replace('dashboard.html');
-    }
-  } else {
-    if (!path.includes('index.html')) {
-      window.location.replace('index.html');
-    }
-  }
-});
-
 // Google Sign In
 document.getElementById('google-login')?.addEventListener('click', async () => {
     try {
@@ -118,4 +83,5 @@ function updateThemeIcon() {
         toggle.textContent = document.body.classList.contains('light-mode') ? '☀️' : '🌙';
     }
 }
+
 
