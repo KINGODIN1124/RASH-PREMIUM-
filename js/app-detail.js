@@ -332,7 +332,7 @@ async function handleDownload(version) {
   const user = firebase.auth().currentUser;
   const versionData = currentApp.versions.find(v => v.version === version);
 
-  if (!versionData || !versionData.downloadUrl) {
+  if (!versionData || !versionData.downloadLink) {
     showNotification('Download link not available.', 'error');
     return;
   }
@@ -357,11 +357,11 @@ async function handleDownload(version) {
   }
 
   // ✅ OPEN DOWNLOAD IMMEDIATELY (CRITICAL FIX)
-  const win = window.open(versionData.downloadUrl, '_blank');
+  const win = window.open(versionData.downloadLink, '_blank');
 
   if (!win) {
     // fallback for strict mobile browsers
-    window.location.href = versionData.downloadUrl;
+    window.location.href = versionData.downloadLink;
   }
 
   // 🔄 Update stats AFTER redirect attempt
@@ -664,6 +664,7 @@ async function deleteReview(reviewId) {
 
 // Initialize app detail page
 loadAppDetails();
+
 
 
 
