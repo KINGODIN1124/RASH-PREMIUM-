@@ -1324,3 +1324,10 @@ header {
   opacity: 0;
   pointer-events: none;
 }
+.modal {
+  display: none;
+}
+
+.modal.show {
+  display: flex;
+}
