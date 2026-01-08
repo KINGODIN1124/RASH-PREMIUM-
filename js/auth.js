@@ -1,7 +1,7 @@
 // Authentication logic
 const auth = firebase.auth();
 
-const MAINTENANCE_MODE = true; // 🔴 toggle ON/OFF
+const MAINTENANCE_MODE = false; // 🔴 toggle ON/OFF
 const OWNER_EMAIL = 'tripathi.shashwat133@gmail.com';
 
 // Google Sign In
@@ -83,5 +83,6 @@ function updateThemeIcon() {
         toggle.textContent = document.body.classList.contains('light-mode') ? '☀️' : '🌙';
     }
 }
+
 
 
