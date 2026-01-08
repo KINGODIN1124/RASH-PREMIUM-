@@ -4,7 +4,7 @@
 // ===============================
 
 const OWNER_EMAIL = 'tripathi.shashwat133@gmail.com';
-const MAINTENANCE_MODE = false; // 🔴 toggle here only
+const MAINTENANCE_MODE = true; // 🔴 toggle here only
 
 firebase.auth().onAuthStateChanged(user => {
   const path = window.location.pathname;
