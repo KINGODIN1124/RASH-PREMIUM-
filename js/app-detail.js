@@ -350,18 +350,17 @@ async function handleDownload(version) {
   const versionData = currentApp.versions.find(v => v.version === version);
 
   const downloadURL =
-  versionData.downloadLink ||
-  versionData.downloadUrl ||
-  versionData.link ||
-  versionData.url;
+    versionData?.downloadLink ||
+    versionData?.downloadUrl ||
+    versionData?.link ||
+    versionData?.url;
 
-if (!downloadURL) {
-  console.error('Download link missing in version object:', versionData);
-  showNotification('Download link not available.', 'error');
-  return;
-}
+  if (!downloadURL) {
+    showNotification('Download link not available.', 'error');
+    return;
+  }
 
-  // Permission check
+  // 🔐 Permission check (BEFORE navigation, but NO awaits after)
   const permission = await canUserDownload(user);
   if (!permission.allowed) {
     showNotification(permission.reason, 'error');
@@ -380,15 +379,20 @@ if (!downloadURL) {
     return;
   }
 
-  // ✅ OPEN DOWNLOAD IMMEDIATELY (CRITICAL FIX)
-  const win = window.open(downloadURL, '_blank');
+  /* ===============================
+     ✅ MOBILE-SAFE DOWNLOAD (CRITICAL)
+  ================================ */
+  const a = document.createElement('a');
+  a.href = downloadURL;
+  a.target = '_blank';
+  a.rel = 'noopener noreferrer';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
 
-  if (!win) {
-    // fallback for strict mobile browsers
-    window.location.href = downloadURL;
-  }
-
-  // 🔄 Update stats AFTER redirect attempt
+  /* ===============================
+     🔄 BACKGROUND UPDATES (ASYNC)
+  ================================ */
   updateUserDownloads(user);
   updateAppStats(currentApp.id);
 
@@ -403,9 +407,10 @@ if (!downloadURL) {
     `Downloading ${currentApp.name} v${version}...`,
     'success'
   );
-    // 🔁 Update UI after download
-setTimeout(updateDownloadStatusUI, 500);
+
+  setTimeout(updateDownloadStatusUI, 500);
 }
+
 
 function getWeeklyDownloads() {
     const now = new Date();
@@ -688,4 +693,5 @@ async function deleteReview(reviewId) {
 
 // Initialize app detail page
 loadAppDetails();
+
 
