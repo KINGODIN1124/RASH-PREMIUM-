@@ -1,57 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RASH MODS - Dashboard</title>
-    <link rel="stylesheet" href="css/styles.css">
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-    <script src="js/firebase-config.js"></script>
-    <script src="js/auth.js" defer></script>
-    <script src="js/dashboard.js" defer></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RASH MODS - Dashboard</title>
+
+  <link rel="stylesheet" href="css/styles.css">
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+  <!-- App Config -->
+  <script src="js/firebase-config.js"></script>
+
+  <!-- 🔔 Push Notifications (MUST load before dashboard.js) -->
+  <script src="js/push-notifications.js"></script>
+
+  <!-- Auth & Dashboard -->
+  <script src="js/auth.js" defer></script>
+  <script src="js/dashboard.js" defer></script>
 </head>
+
 <body>
-    <header class="dashboard-header">
-  <div class="header-content">
-    <div class="brand-block">
-      <h1 class="brand-name">RASH MODS</h1>
-      <p class="brand-tagline">
-        Owner-Managed Premium App Platform
-      </p>
-    </div>
 
-    <!-- OWNER BADGE -->
-    <div id="owner-badge" class="owner-badge" style="display:none">
-      👑 Owner Account
-    </div>
+  <!-- HEADER -->
+  <header class="dashboard-header">
+    <div class="header-content">
 
-    <div class="header-controls">
-      <input type="text" id="search" placeholder="Search premium apps...">
-      <button id="theme-toggle" class="btn-icon">🌙</button>
-      <button id="logout" class="btn">Logout</button>
+      <div class="brand-block">
+        <h1 class="brand-name">RASH MODS</h1>
+        <p class="brand-tagline">
+          Owner-Managed Premium App Platform
+        </p>
+      </div>
+
+      <!-- OWNER BADGE -->
+      <div id="owner-badge" class="owner-badge" style="display:none">
+        👑 Owner Account
+      </div>
+
+      <div class="header-controls">
+        <input type="text" id="search" placeholder="Search premium apps...">
+        <button id="theme-toggle" class="btn-icon">🌙</button>
+        <button id="logout" class="btn">Logout</button>
+      </div>
+
     </div>
+  </header>
+
+  <!-- ANNOUNCEMENT BANNER -->
+  <div class="announcement" id="announcement-banner">
+    🚀 New premium apps added this week · Download limits reset every Sunday
   </div>
-    </header>
-    <div class="announcement">
-  🚀 New premium apps added this week · Download limits reset every Sunday
+
+  <!-- MAIN CONTENT -->
+  <main>
+    <div id="apps-container" class="apps-sections">
+      <!-- Apps loaded dynamically -->
     </div>
-    <main>
-  <div id="apps-container" class="apps-sections">
-    <!-- Premium apps will be loaded here -->
-  </div>
-    </main>
-    <footer class="dashboard-footer">
-  <p>
-    🔒 Secured by Firebase · 📊 All downloads are monitored · ⚠️ Abuse prevention enabled
-  </p>
-  <p>
-    © 2026 <strong>RASH MODS</strong>. All rights reserved.
-  </p>
-    </footer>
-    <script src="js/push-notifications.js"></script>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="dashboard-footer">
+    <p>
+      🔒 Secured by Firebase · 📊 All downloads are monitored · ⚠️ Abuse prevention enabled
+    </p>
+    <p>
+      © 2026 <strong>RASH MODS</strong>. All rights reserved.
+    </p>
+  </footer>
+
 </body>
 </html>
-
-
