@@ -16,12 +16,6 @@ auth.onAuthStateChanged((user) => {
     }
 });
 
-firebase.auth().onAuthStateChanged(user => {
-  if (user) {
-    // User already logged in → go directly to dashboard
-    window.location.href = 'dashboard.html';
-  }
-});
 // Google Sign In
 document.getElementById('google-login')?.addEventListener('click', async () => {
     try {
@@ -101,5 +95,6 @@ function updateThemeIcon() {
         toggle.textContent = document.body.classList.contains('light-mode') ? '☀️' : '🌙';
     }
 }
+
 
 
