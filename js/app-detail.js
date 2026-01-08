@@ -180,11 +180,21 @@ function renderAppDetails() {
 
     // Add download event listeners
     document.querySelectorAll('.download-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const version = e.target.dataset.version || e.target.closest('.download-btn').dataset.version;
-            showDownloadModal(version);
-        });
+    btn.addEventListener('click', (e) => {
+        console.log('DOWNLOAD BUTTON CLICKED');
+
+        const button = e.target.closest('.download-btn');
+        if (!button) {
+            console.error('Button not found');
+            return;
+        }
+
+        const version = button.dataset.version;
+        console.log('Version:', version);
+
+        showDownloadModal(version);
     });
+});
     // 🔥 CALL STATUS UPDATE AFTER UI IS READY
 setTimeout(updateDownloadStatusUI, 300);
 
@@ -316,13 +326,20 @@ async function updateDownloadStatusUI() {
   timerEl.textContent =
     `Resets in: ${getSundayCountdown()}`;
 
-  if (remaining === 0) {
+  if (Number.isFinite(remaining) && remaining === 0) {
     document.querySelectorAll('.download-btn').forEach(btn => {
       btn.disabled = true;
       btn.textContent = 'Limit Reached';
       btn.classList.add('disabled');
     });
   }
+    else {
+  document.querySelectorAll('.download-btn').forEach(btn => {
+    btn.disabled = false;
+    btn.textContent = 'Download';
+    btn.classList.remove('disabled');
+  });
+    }
 }
 
 // ===============================
@@ -671,3 +688,4 @@ async function deleteReview(reviewId) {
 
 // Initialize app detail page
 loadAppDetails();
+
