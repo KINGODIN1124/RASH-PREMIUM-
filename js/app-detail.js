@@ -332,10 +332,17 @@ async function handleDownload(version) {
   const user = firebase.auth().currentUser;
   const versionData = currentApp.versions.find(v => v.version === version);
 
-  if (!versionData || !versionData.downloadLink) {
-    showNotification('Download link not available.', 'error');
-    return;
-  }
+  const downloadURL =
+  versionData.downloadLink ||
+  versionData.downloadUrl ||
+  versionData.link ||
+  versionData.url;
+
+if (!downloadURL) {
+  console.error('Download link missing in version object:', versionData);
+  showNotification('Download link not available.', 'error');
+  return;
+}
 
   // Permission check
   const permission = await canUserDownload(user);
@@ -357,11 +364,11 @@ async function handleDownload(version) {
   }
 
   // ✅ OPEN DOWNLOAD IMMEDIATELY (CRITICAL FIX)
-  const win = window.open(versionData.downloadLink, '_blank');
+  const win = window.open(downloadURL, '_blank');
 
   if (!win) {
     // fallback for strict mobile browsers
-    window.location.href = versionData.downloadLink;
+    window.location.href = downloadURL;
   }
 
   // 🔄 Update stats AFTER redirect attempt
@@ -664,7 +671,3 @@ async function deleteReview(reviewId) {
 
 // Initialize app detail page
 loadAppDetails();
-
-
-
-
