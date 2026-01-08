@@ -181,19 +181,9 @@ function renderAppDetails() {
     // Add download event listeners
     document.querySelectorAll('.download-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
-        console.log('DOWNLOAD BUTTON CLICKED');
-
-        const button = e.target.closest('.download-btn');
-        if (!button) {
-            console.error('Button not found');
-            return;
-        }
-
-        const version = button.dataset.version;
-        console.log('Version:', version);
-
-        showDownloadModal(version);
-    });
+    const button = e.currentTarget; // ✅ ALWAYS the button
+    const version = button.dataset.version;
+    showDownloadModal(version);
 });
     // 🔥 CALL STATUS UPDATE AFTER UI IS READY
 setTimeout(updateDownloadStatusUI, 300);
@@ -693,5 +683,6 @@ async function deleteReview(reviewId) {
 
 // Initialize app detail page
 loadAppDetails();
+
 
 
