@@ -160,31 +160,6 @@ body {
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 <script src="js/firebase-config.js"></script>
-
-  <script>
-  // 👑 FIREBASE-VERIFIED OWNER BYPASS
-  firebase.auth().onAuthStateChanged(user => {
-    if (!user) return;
-
-    const OWNER_EMAIL = 'tripathi.shashwat133@gmail.com'; // 🔴 change if needed
-
-    if (
-      user.email === OWNER_EMAIL &&
-      user.emailVerified
-    ) {
-      // Owner verified → bypass maintenance
-      window.location.href = 'dashboard.html';
-    }
-  });
-  </script>
-  
-    <script>
-  // 👑 OWNER BYPASS
-  const params = new URLSearchParams(window.location.search);
-  if (params.get('owner') === '1') {
-    window.location.href = 'dashboard.html';
-  }
-</script>
 </head>
 <body>
 
@@ -198,7 +173,7 @@ body {
       <div class="subtitle">We’ll Be Back Shortly</div>
       <p class="description">
         RASH MODS is currently under scheduled maintenance.
-        We’re performing internal improvements and system checks to ensure
+       We’re performing internal improvements and system checks to ensure
         a stable, secure, and high-quality experience for all users.
       </p>
     </div>
