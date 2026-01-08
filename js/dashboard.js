@@ -1,10 +1,3 @@
-// 🔐 DASHBOARD AUTH GUARD (NO LOOPS)
-firebase.auth().onAuthStateChanged(user => {
-  if (!user) {
-    window.location.replace('index.html');
-  }
-});
-
 // Dashboard functionality with enhanced UI
 let apps = [];
 let filteredApps = [];
@@ -308,6 +301,7 @@ document.getElementById('logout')?.addEventListener('click', async () => {
         console.error('Logout failed:', err);
     }
 });
+
 
 
 
