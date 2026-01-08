@@ -195,25 +195,37 @@ setTimeout(updateDownloadStatusUI, 300);
 
 // Show download modal
 function showDownloadModal(version) {
-    const modal = document.getElementById('download-modal');
-    const modalText = document.getElementById('modal-text');
-    modalText.innerHTML = `
-        <div class="modal-icon">📥</div>
-        <div class="modal-title">Confirm Download</div>
-        <div class="modal-description">Are you sure you want to download <strong>${currentApp.name}</strong> version <strong>${version}</strong>?</div>
-    `;
+  const modal = document.getElementById('download-modal');
+  const modalText = document.getElementById('modal-text');
+  const confirmBtn = document.getElementById('confirm-download');
+  const cancelBtn = document.getElementById('cancel-download');
 
-    modal.classList.add('show');
+  // 🛑 Safety check (VERY IMPORTANT)
+  if (!modal || !modalText || !confirmBtn || !cancelBtn) {
+    console.error('Download modal elements missing');
+    showNotification('Download system error.', 'error');
+    return;
+  }
 
-    // Handle download confirmation
-    document.getElementById('confirm-download').onclick = () => {
-        handleDownload(version);
-        modal.classList.remove('show');
-    };
+  modalText.innerHTML = `
+    <div class="modal-icon">📥</div>
+    <div class="modal-title">Confirm Download</div>
+    <div class="modal-description">
+      Download <strong>${currentApp.name}</strong>
+      version <strong>${version}</strong>?
+    </div>
+  `;
 
-    document.getElementById('cancel-download').onclick = () => {
-        modal.classList.remove('show');
-    };
+  modal.classList.add('show');
+
+  confirmBtn.onclick = () => {
+    modal.classList.remove('show');
+    handleDownload(version);
+  };
+
+  cancelBtn.onclick = () => {
+    modal.classList.remove('show');
+  };
 }
 // ===============================
 // HELPER FUNCTIONS
@@ -683,6 +695,7 @@ async function deleteReview(reviewId) {
 
 // Initialize app detail page
 loadAppDetails();
+
 
 
 
