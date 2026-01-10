@@ -187,8 +187,11 @@ function renderAppDetails() {
     showDownloadModal(version);
 });
     // 🔥 CALL STATUS UPDATE AFTER UI IS READY
-setTimeout(updateDownloadStatusUI, 300);
-
+firebase.auth().onAuthStateChanged(user => {
+  if (user) {
+    updateDownloadStatusUI();
+  }
+});
     // Initialize reviews
     loadReviews();
     initReviewForm();
@@ -698,4 +701,5 @@ async function deleteReview(reviewId) {
 document.addEventListener('DOMContentLoaded', () => {
   loadAppDetails();
 });
+
 
