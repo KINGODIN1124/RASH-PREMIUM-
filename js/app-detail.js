@@ -694,8 +694,6 @@ async function deleteReview(reviewId) {
 }
 
 // Initialize app detail page
-loadAppDetails();
-
-
-
-
+document.addEventListener('DOMContentLoaded', () => {
+  loadAppDetails();
+});
