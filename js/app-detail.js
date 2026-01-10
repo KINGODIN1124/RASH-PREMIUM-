@@ -1,3 +1,4 @@
+document.body.innerHTML = '<h1 style="color:red">JS LOADED</h1>';
 // App detail functionality
 let currentApp = null;
 
@@ -697,3 +698,4 @@ async function deleteReview(reviewId) {
 document.addEventListener('DOMContentLoaded', () => {
   loadAppDetails();
 });
+
