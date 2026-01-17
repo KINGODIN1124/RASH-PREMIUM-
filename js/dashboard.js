@@ -80,8 +80,19 @@ function renderDashboard(categories) {
     `;
     container.appendChild(welcomeSection);
 
+    // Define category order: Entertainment first, then Android, then Windows, then others
+    const categoryOrder = ['Entertainment', 'Android', 'Windows'];
+    const sortedCategories = Object.keys(categories).sort((a, b) => {
+        const aIndex = categoryOrder.indexOf(a);
+        const bIndex = categoryOrder.indexOf(b);
+        if (aIndex !== -1 && bIndex !== -1) return aIndex - bIndex;
+        if (aIndex !== -1) return -1;
+        if (bIndex !== -1) return 1;
+        return a.localeCompare(b);
+    });
+
     // Render each category as a slider
-    Object.keys(categories).forEach((category, index) => {
+    sortedCategories.forEach((category, index) => {
         const categorySection = document.createElement('div');
         categorySection.className = 'category-section';
         categorySection.innerHTML = `
@@ -132,6 +143,8 @@ function renderDashboard(categories) {
 function getCategoryIcon(category) {
     const icons = {
         'Entertainment': '🎬',
+        'Android': '🤖',
+        'Windows': '🪟',
         'Creative Tools': '🎨',
         'Utility': '🛠️',
         'Social': '👥',
