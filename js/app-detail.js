@@ -183,14 +183,12 @@ function renderAppDetails() {
         btn.addEventListener('click', (e) => {
             const button = e.currentTarget; // ✅ ALWAYS the button
             const version = button.dataset.version;
-            handleDownload(version);
+            showDownloadModal(version);
         });
     });
     // 🔥 CALL STATUS UPDATE AFTER UI IS READY
     firebase.auth().onAuthStateChanged(user => {
-        if (user) {
-            updateDownloadStatusUI();
-        }
+        updateDownloadStatusUI();
     });
     // Initialize reviews
     loadReviews();
@@ -249,6 +247,19 @@ async function canUserDownload(user) {
 
     // Guest user (not logged in)
     if (!user) {
+        const firstVisit = localStorage.getItem('guest_first_visit');
+        if (!firstVisit) {
+            localStorage.setItem('guest_first_visit', new Date().toISOString());
+            return { allowed: false, reason: 'Please wait 24 hours after your first visit to download apps.' };
+        } else {
+            const firstVisitTime = new Date(firstVisit);
+            const now = new Date();
+            const hoursPassed = (now - firstVisitTime) / (1000 * 60 * 60);
+            if (hoursPassed < 24) {
+                const hoursLeft = Math.ceil(24 - hoursPassed);
+                return { allowed: false, reason: `Please wait ${hoursLeft} hours after your first visit to download apps.` };
+            }
+        }
         return { allowed: true, limit: 10, weekStart };
     }
 
@@ -371,9 +382,20 @@ async function handleDownload(version) {
     return;
   }
 
-  const userRef = db.collection('users').doc(user.uid);
-  const snap = await userRef.get();
-  const used = snap.exists ? snap.data().weeklyDownloads || 0 : 0;
+  let used = 0;
+  if (user) {
+    try {
+      const userRef = db.collection('users').doc(user.uid);
+      const snap = await userRef.get();
+      used = snap.exists ? snap.data().weeklyDownloads || 0 : 0;
+    } catch (error) {
+      console.error('Error getting user data:', error);
+      used = 0; // Assume 0 if error
+    }
+  } else {
+    // For guests, use localStorage
+    used = getWeeklyDownloads();
+  }
 
   if (used >= permission.limit) {
     showNotification(
@@ -384,22 +406,28 @@ async function handleDownload(version) {
   }
 
   /* ===============================
-     ✅ REDIRECT TO DOWNLOAD LINK
+     ✅ NAVIGATE TO DOWNLOAD PAGE
   ================================ */
   window.location.href = downloadURL;
 
   /* ===============================
      🔄 BACKGROUND UPDATES (ASYNC)
   ================================ */
-  updateUserDownloads(user);
-  updateAppStats(currentApp.id);
+  if (user) {
+    updateUserDownloads(user);
+    updateAppStats(currentApp.id);
 
-  db.collection('downloads').add({
-    userId: user.uid,
-    appId: currentApp.id,
-    version,
-    date: new Date().toISOString()
-  });
+    db.collection('downloads').add({
+      userId: user.uid,
+      appId: currentApp.id,
+      version,
+      date: new Date().toISOString()
+    });
+  } else {
+    // For guests, update localStorage and set last download time
+    recordDownload(version);
+    localStorage.setItem('guest_last_download', new Date().toISOString());
+  }
 
   showNotification(
     `Downloading ${currentApp.name} v${version}...`,
