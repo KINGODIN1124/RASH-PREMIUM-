@@ -78,10 +78,10 @@ function renderAppDetails() {
                             Screenshots
                         </h2>
                         <div class="screenshots-grid">
-                            <img src="screenshot/Screenshot1.jpg" alt="Screenshot 1" loading="lazy" class="screenshot">
-                            <img src="screenshot/IMG_20260106_013308.jpg" alt="Screenshot 2" loading="lazy" class="screenshot">
-                            <img src="screenshot/IMG_20260106_013402.jpg" alt="Screenshot 3" loading="lazy" class="screenshot">
-                            <img src="screenshot/Screenshot1.jpg" alt="Screenshot 4" loading="lazy" class="screenshot">
+                            <img src="" alt="Screenshot 1" loading="lazy" class="screenshot">
+                            <img src="" alt="Screenshot 2" loading="lazy" class="screenshot">
+                            <img src="" alt="Screenshot 3" loading="lazy" class="screenshot">
+                            <img src="" alt="Screenshot 4" loading="lazy" class="screenshot">
                         </div>
                     </section>
 
@@ -763,3 +763,4 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   loadAppDetails();
 });
+
