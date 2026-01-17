@@ -1,5 +1,4 @@
-document.body.innerHTML = '<h1 style="color:red">JS LOADED</h1>';
-// App detail functionality
+ // App detail functionality
 let currentApp = null;
 
 // Get app ID from URL
@@ -79,10 +78,10 @@ function renderAppDetails() {
                             Screenshots
                         </h2>
                         <div class="screenshots-grid">
-                            <img src="screenshot/screenshot1" alt="Screenshot 1" loading="lazy" class="screenshot">
-                            <img src="screenshot/screenshot2" alt="Screenshot 2" loading="lazy" class="screenshot">
-                            <img src="screenshot/screenshot3" alt="Screenshot 3" loading="lazy" class="screenshot">
-                            <img src="screenshot/screenshot4" alt="Screenshot 4" loading="lazy" class="screenshot">
+                            <img src="screenshot/Screenshot1.jpg" alt="Screenshot 1" loading="lazy" class="screenshot">
+                            <img src="screenshot/IMG_20260106_013308.jpg" alt="Screenshot 2" loading="lazy" class="screenshot">
+                            <img src="screenshot/IMG_20260106_013402.jpg" alt="Screenshot 3" loading="lazy" class="screenshot">
+                            <img src="screenshot/Screenshot1.jpg" alt="Screenshot 4" loading="lazy" class="screenshot">
                         </div>
                     </section>
 
@@ -148,10 +147,10 @@ function renderAppDetails() {
                         </ul>
                     </div>
                     <div class="sidebar-card">
-  <h3 class="sidebar-title">📊 Download Status</h3>
-  <p id="downloads-left">Loading…</p>
-  <p id="reset-timer">Loading…</p>
-</div>
+                        <h3 class="sidebar-title">📊 Download Status</h3>
+                        <p id="downloads-left">Loading…</p>
+                        <p id="reset-timer">Loading…</p>
+                    </div>
                     <div class="sidebar-card versions-card">
                         <h3 class="sidebar-title">
                             <span class="title-icon">📦</span>
@@ -181,17 +180,18 @@ function renderAppDetails() {
 
     // Add download event listeners
     document.querySelectorAll('.download-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-    const button = e.currentTarget; // ✅ ALWAYS the button
-    const version = button.dataset.version;
-    showDownloadModal(version);
-});
+        btn.addEventListener('click', (e) => {
+            const button = e.currentTarget; // ✅ ALWAYS the button
+            const version = button.dataset.version;
+            handleDownload(version);
+        });
+    });
     // 🔥 CALL STATUS UPDATE AFTER UI IS READY
-firebase.auth().onAuthStateChanged(user => {
-  if (user) {
-    updateDownloadStatusUI();
-  }
-});
+    firebase.auth().onAuthStateChanged(user => {
+        if (user) {
+            updateDownloadStatusUI();
+        }
+    });
     // Initialize reviews
     loadReviews();
     initReviewForm();
@@ -199,37 +199,37 @@ firebase.auth().onAuthStateChanged(user => {
 
 // Show download modal
 function showDownloadModal(version) {
-  const modal = document.getElementById('download-modal');
-  const modalText = document.getElementById('modal-text');
-  const confirmBtn = document.getElementById('confirm-download');
-  const cancelBtn = document.getElementById('cancel-download');
+    const modal = document.getElementById('download-modal');
+    const modalText = document.getElementById('modal-text');
+    const confirmBtn = document.getElementById('confirm-download');
+    const cancelBtn = document.getElementById('cancel-download');
 
-  // 🛑 Safety check (VERY IMPORTANT)
-  if (!modal || !modalText || !confirmBtn || !cancelBtn) {
-    console.error('Download modal elements missing');
-    showNotification('Download system error.', 'error');
-    return;
-  }
+    // 🛑 Safety check (VERY IMPORTANT)
+    if (!modal || !modalText || !confirmBtn || !cancelBtn) {
+        console.error('Download modal elements missing');
+        showNotification('Download system error.', 'error');
+        return;
+    }
 
-  modalText.innerHTML = `
-    <div class="modal-icon">📥</div>
-    <div class="modal-title">Confirm Download</div>
-    <div class="modal-description">
-      Download <strong>${currentApp.name}</strong>
-      version <strong>${version}</strong>?
-    </div>
-  `;
+    modalText.innerHTML = `
+        <div class="modal-icon">📥</div>
+        <div class="modal-title">Confirm Download</div>
+        <div class="modal-description">
+            Download <strong>${currentApp.name}</strong>
+            version <strong>${version}</strong>?
+        </div>
+    `;
 
-  modal.classList.add('show');
+    modal.classList.add('show');
 
-  confirmBtn.onclick = () => {
-    modal.classList.remove('show');
-    handleDownload(version);
-  };
+    confirmBtn.onclick = () => {
+        modal.classList.remove('show');
+        handleDownload(version);
+    };
 
-  cancelBtn.onclick = () => {
-    modal.classList.remove('show');
-  };
+    cancelBtn.onclick = () => {
+        modal.classList.remove('show');
+    };
 }
 // ===============================
 // HELPER FUNCTIONS
@@ -237,114 +237,112 @@ function showDownloadModal(version) {
 
 // Week reset (Sunday)
 function getWeekStartSunday() {
-  const now = new Date();
-  const sunday = new Date(now);
-  sunday.setDate(now.getDate() - now.getDay());
-  return sunday.toISOString().split('T')[0];
+    const now = new Date();
+    const sunday = new Date(now);
+    sunday.setDate(now.getDate() - now.getDay());
+    return sunday.toISOString().split('T')[0];
 }
 
 // Check permission & limits
 async function canUserDownload(user) {
-  const weekStart = getWeekStartSunday();
+    const weekStart = getWeekStartSunday();
 
-  // Guest user
-  if (user.isAnonymous) {
-    const joinedAt = user.metadata.creationTime
-  ? new Date(user.metadata.creationTime)
-  : new Date();
-      
-    const hoursPassed =
-      (Date.now() - joinedAt.getTime()) / (1000 * 60 * 60);
-
-    if (hoursPassed < 24) {
-      return {
-        allowed: false,
-        reason: 'Guest users can download after 24 hours.'
-      };
+    // Guest user (not logged in)
+    if (!user) {
+        return { allowed: true, limit: 10, weekStart };
     }
 
-    return { allowed: true, limit: 1, weekStart };
-  }
+    // Anonymous user
+    if (user.isAnonymous) {
+        return { allowed: true, limit: 1, weekStart };
+    }
 
-  // Google user
-  return { allowed: true, limit: 2, weekStart };
+    // Google user
+    return { allowed: true, limit: 2, weekStart };
 }
 
 // Update user weekly downloads
 async function updateUserDownloads(user) {
-  const userRef = db.collection('users').doc(user.uid);
-  const doc = await userRef.get();
-  const weekStart = getWeekStartSunday();
+    const userRef = db.collection('users').doc(user.uid);
+    const doc = await userRef.get();
+    const weekStart = getWeekStartSunday();
 
-  if (!doc.exists || doc.data().weekStart !== weekStart) {
-    await userRef.set({
-      isGuest: user.isAnonymous,
-      joinedAt: user.metadata.creationTime
-  ? new Date(user.metadata.creationTime)
-  : firebase.firestore.FieldValue.serverTimestamp(),
-      weeklyDownloads: 1,
-      weekStart
-    }, { merge: true });
-  } else {
-    await userRef.update({
-      weeklyDownloads: firebase.firestore.FieldValue.increment(1)
-    });
-  }
+    if (!doc.exists || doc.data().weekStart !== weekStart) {
+        await userRef.set({
+            isGuest: user.isAnonymous,
+            joinedAt: user.metadata.creationTime
+                ? new Date(user.metadata.creationTime)
+                : firebase.firestore.FieldValue.serverTimestamp(),
+            weeklyDownloads: 1,
+            weekStart
+        }, { merge: true });
+    } else {
+        await userRef.update({
+            weeklyDownloads: firebase.firestore.FieldValue.increment(1)
+        });
+    }
 }
 
 // Update app stats
 async function updateAppStats(appId) {
-  const appRef = db.collection('apps').doc(appId);
-  await appRef.set({
-    totalDownloads: firebase.firestore.FieldValue.increment(1)
-  }, { merge: true });
+    const appRef = db.collection('apps').doc(appId);
+    await appRef.set({
+        totalDownloads: firebase.firestore.FieldValue.increment(1)
+    }, { merge: true });
 }
+
 function getSundayCountdown() {
-  const now = new Date();
-  const sunday = new Date(now);
-  sunday.setDate(now.getDate() + (7 - now.getDay()) % 7);
-  sunday.setHours(0, 0, 0, 0);
+    const now = new Date();
+    const sunday = new Date(now);
+    sunday.setDate(now.getDate() + (7 - now.getDay()) % 7);
+    sunday.setHours(0, 0, 0, 0);
 
-  const diff = sunday - now;
-  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-  const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-  const minutes = Math.floor((diff / (1000 * 60)) % 60);
+    const diff = sunday - now;
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    const minutes = Math.floor((diff / (1000 * 60)) % 60);
 
-  return `${days}d ${hours}h ${minutes}m`;
+    return `${days}d ${hours}h ${minutes}m`;
 }
+
 async function updateDownloadStatusUI() {
-  const user = firebase.auth().currentUser;
-  if (!user) return;
+    const user = firebase.auth().currentUser;
 
-  const statusEl = document.getElementById('downloads-left');
-  const timerEl = document.getElementById('reset-timer');
+    const statusEl = document.getElementById('downloads-left');
+    const timerEl = document.getElementById('reset-timer');
 
-  const permission = await canUserDownload(user);
-  const doc = await db.collection('users').doc(user.uid).get();
-  const used = doc.exists ? doc.data().weeklyDownloads || 0 : 0;
-  const limit = permission.limit;
+    const permission = await canUserDownload(user);
+    let used = 0;
 
-  const remaining = Math.max(limit - used, 0);
+    if (user) {
+        const doc = await db.collection('users').doc(user.uid).get();
+        used = doc.exists ? doc.data().weeklyDownloads || 0 : 0;
+    } else {
+        // For guests, use localStorage
+        used = getWeeklyDownloads();
+    }
 
-  statusEl.textContent =
-    `Downloads left this week: ${remaining} / ${limit}`;
+    const limit = permission.limit;
+    const remaining = Math.max(limit - used, 0);
 
-  timerEl.textContent =
-    `Resets in: ${getSundayCountdown()}`;
+    statusEl.textContent =
+        `Downloads left this week: ${remaining} / ${limit}`;
 
-  if (Number.isFinite(remaining) && remaining === 0) {
-    document.querySelectorAll('.download-btn').forEach(btn => {
-      btn.disabled = true;
-      btn.textContent = 'Limit Reached';
-      btn.classList.add('disabled');
-    });
-  }
-    else {
-  document.querySelectorAll('.download-btn').forEach(btn => {
-    btn.disabled = false;
-    btn.textContent = 'Download';
-    btn.classList.remove('disabled');
-  });
+    timerEl.textContent =
+        `Resets in: ${getSundayCountdown()}`;
+
+    if (Number.isFinite(remaining) && remaining === 0) {
+        document.querySelectorAll('.download-btn').forEach(btn => {
+            btn.disabled = true;
+            btn.textContent = 'Limit Reached';
+            btn.classList.add('disabled');
+        });
+    } else {
+        document.querySelectorAll('.download-btn').forEach(btn => {
+            btn.disabled = false;
+            btn.textContent = 'Download';
+            btn.classList.remove('disabled');
+        });
     }
 }
 
@@ -386,15 +384,9 @@ async function handleDownload(version) {
   }
 
   /* ===============================
-     ✅ MOBILE-SAFE DOWNLOAD (CRITICAL)
+     ✅ REDIRECT TO DOWNLOAD LINK
   ================================ */
-  const a = document.createElement('a');
-  a.href = downloadURL;
-  a.target = '_blank';
-  a.rel = 'noopener noreferrer';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
+  window.location.href = downloadURL;
 
   /* ===============================
      🔄 BACKGROUND UPDATES (ASYNC)
@@ -503,73 +495,73 @@ let selectedRating = 0;
 
 // Load reviews for this app
 async function loadReviews() {
-  const reviewsList = document.getElementById('reviews-list');
-  reviewsList.innerHTML = 'Loading reviews...';
+    const reviewsList = document.getElementById('reviews-list');
+    reviewsList.innerHTML = 'Loading reviews...';
 
-  try {
-    const querySnapshot = await db
-      .collection('reviews')
-      .where('appId', '==', appId)
-      .get();
+    try {
+        const querySnapshot = await db
+            .collection('reviews')
+            .where('appId', '==', appId)
+            .get();
 
-    let reviews = [];
+        let reviews = [];
 
-    querySnapshot.forEach(doc => {
-      reviews.push({
-        id: doc.id,
-        ...doc.data()
-      });
-    });
-            // Sort latest first
-    reviews.sort((a, b) => new Date(b.date) - new Date(a.date));
+        querySnapshot.forEach(doc => {
+            reviews.push({
+                id: doc.id,
+                ...doc.data()
+            });
+        });
+        // Sort latest first
+        reviews.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-    if (reviews.length === 0) {
-      reviewsList.innerHTML = `
-        <div class="no-reviews">
-          <div class="no-reviews-icon">💭</div>
-          <p>No reviews yet. Be the first to review this app!</p>
-        </div>
-      `;
-      return;
-    }
-
-    const currentUser = firebase.auth().currentUser;
-        reviewsList.innerHTML = reviews.map(review => `
-      <div class="review-card">
-        <div class="review-header">
-          <div class="reviewer-info">
-            <div class="reviewer-avatar">
-              ${(review.author || 'U')[0].toUpperCase()}
-            </div>
-            <div>
-              <strong>${review.author}</strong>
-              <div class="review-rating">
-                ${'⭐'.repeat(review.rating)}
-              </div>
-            </div>
-          </div>
-
-      ${
-            currentUser?.uid === review.userId
-              ? `
-                <div class="review-actions">
-                  <button onclick="editReview('${review.id}', '${review.text.replace(/'/g, "\\'")}', ${review.rating})">✏️</button>
-                  <button onclick="deleteReview('${review.id}')">🗑</button>
+        if (reviews.length === 0) {
+            reviewsList.innerHTML = `
+                <div class="no-reviews">
+                    <div class="no-reviews-icon">💭</div>
+                    <p>No reviews yet. Be the first to review this app!</p>
                 </div>
-              `
-              : ''
-          }
-        </div>
+            `;
+            return;
+        }
 
-    <p class="review-text">${review.text}</p>
-      </div>
-    `).join('');
+        const currentUser = firebase.auth().currentUser;
+        reviewsList.innerHTML = reviews.map(review => `
+            <div class="review-card">
+                <div class="review-header">
+                    <div class="reviewer-info">
+                        <div class="reviewer-avatar">
+                            ${(review.author || 'U')[0].toUpperCase()}
+                        </div>
+                        <div>
+                            <strong>${review.author}</strong>
+                            <div class="review-rating">
+                                ${'⭐'.repeat(review.rating)}
+                            </div>
+                        </div>
+                    </div>
 
-  } catch (error) {
-    console.error('Error loading reviews:', error);
-    reviewsList.innerHTML =
-      '<div class="error">Failed to load reviews.</div>';
-  }
+                    ${
+                        currentUser?.uid === review.userId
+                            ? `
+                                <div class="review-actions">
+                                    <button onclick="editReview('${review.id}', '${review.text.replace(/'/g, "\\'")}', ${review.rating})">✏️</button>
+                                    <button onclick="deleteReview('${review.id}')">🗑</button>
+                                </div>
+                            `
+                            : ''
+                    }
+                </div>
+
+                <p class="review-text">${review.text}</p>
+            </div>
+        `).join('');
+
+    } catch (error) {
+        console.error('Error loading reviews:', error);
+        reviewsList.innerHTML =
+            '<div class="error">Failed to load reviews.</div>';
+    }
 }
 
 // Initialize review form
@@ -624,13 +616,13 @@ async function submitReview() {
 
     const user = firebase.auth().currentUser;
 
-if (!user || user.isAnonymous) {
-  showNotification(
-    'Please sign in with Google to submit a review.',
-    'error'
-  );
-  return;
-}
+    if (!user || user.isAnonymous) {
+        showNotification(
+            'Please sign in with Google to submit a review.',
+            'error'
+        );
+        return;
+    }
     const review = {
         author: user?.displayName || user?.email || 'Anonymous',
         rating: selectedRating,
@@ -665,41 +657,39 @@ if (!user || user.isAnonymous) {
 }
 
 async function editReview(reviewId, text, rating) {
-  const newText = prompt('Edit your review:', text);
-  if (!newText || !newText.trim()) return;
+    const newText = prompt('Edit your review:', text);
+    if (!newText || !newText.trim()) return;
 
-  try {
-    await db.collection('reviews').doc(reviewId).update({
-      text: newText.trim(),
-      rating: rating,
-      date: new Date().toISOString()
-    });
+    try {
+        await db.collection('reviews').doc(reviewId).update({
+            text: newText.trim(),
+            rating: rating,
+            date: new Date().toISOString()
+        });
 
-    showNotification('Review updated successfully!', 'success');
-    loadReviews();
-  } catch (error) {
-    console.error(error);
-    showNotification('Failed to update review.', 'error');
-  }
+        showNotification('Review updated successfully!', 'success');
+        loadReviews();
+    } catch (error) {
+        console.error(error);
+        showNotification('Failed to update review.', 'error');
+    }
 }
 
 async function deleteReview(reviewId) {
-  const confirmDelete = confirm('Delete this review permanently?');
-  if (!confirmDelete) return;
+    const confirmDelete = confirm('Delete this review permanently?');
+    if (!confirmDelete) return;
 
-  try {
-    await db.collection('reviews').doc(reviewId).delete();
-    showNotification('Review deleted.', 'success');
-    loadReviews();
-  } catch (error) {
-    console.error(error);
-    showNotification('Failed to delete review.', 'error');
-  }
+    try {
+        await db.collection('reviews').doc(reviewId).delete();
+        showNotification('Review deleted.', 'success');
+        loadReviews();
+    } catch (error) {
+        console.error(error);
+        showNotification('Failed to delete review.', 'error');
+    }
 }
 
 // Initialize app detail page
 document.addEventListener('DOMContentLoaded', () => {
   loadAppDetails();
 });
-
-
