@@ -763,4 +763,3 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   loadAppDetails();
 });
-
