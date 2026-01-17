@@ -9,6 +9,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <script src="js/firebase-config.js"></script>
+    <script src="js/router.js"></script>
     <script src="js/auth.js" defer></script>
 </head>
 <body>
@@ -23,7 +24,7 @@
         </div>
     </header>
     <main>
-        <main id="app-details" class="app-details">
+        <div id="app-details" class="app-details">
             <!-- App details will be loaded here -->
         </div>
     </main>
@@ -32,7 +33,7 @@
   <div class="modal-content">
     <div id="modal-text"></div>
 
-    <div class="modal-actions">
+    <div class="modal-buttons">
       <button id="confirm-download" class="btn btn-primary">
         Yes, Download
       </button>
