@@ -190,6 +190,8 @@ function renderAppDetails() {
     firebase.auth().onAuthStateChanged(user => {
         updateDownloadStatusUI();
     });
+    // Also call for guests
+    updateDownloadStatusUI();
     // Initialize reviews
     loadReviews();
     initReviewForm();
@@ -260,7 +262,7 @@ async function canUserDownload(user) {
                 return { allowed: false, reason: `Please wait ${hoursLeft} hours after your first visit to download apps.` };
             }
         }
-        return { allowed: true, limit: 10, weekStart };
+        return { allowed: true, limit: 1, weekStart };
     }
 
     // Anonymous user
@@ -269,7 +271,7 @@ async function canUserDownload(user) {
     }
 
     // Google user
-    return { allowed: true, limit: 2, weekStart };
+    return { allowed: true, limit: 3, weekStart };
 }
 
 // Update user weekly downloads
@@ -322,38 +324,73 @@ async function updateDownloadStatusUI() {
     const statusEl = document.getElementById('downloads-left');
     const timerEl = document.getElementById('reset-timer');
 
-    const permission = await canUserDownload(user);
-    let used = 0;
-
-    if (user) {
-        const doc = await db.collection('users').doc(user.uid).get();
-        used = doc.exists ? doc.data().weeklyDownloads || 0 : 0;
-    } else {
-        // For guests, use localStorage
-        used = getWeeklyDownloads();
+    // Check if elements exist (in case script is loaded on wrong page)
+    if (!statusEl || !timerEl) {
+        return;
     }
 
-    const limit = permission.limit;
-    const remaining = Math.max(limit - used, 0);
+    try {
+        const permission = await canUserDownload(user);
+        let used = 0;
 
-    statusEl.textContent =
-        `Downloads left this week: ${remaining} / ${limit}`;
+        if (user) {
+            try {
+                const doc = await db.collection('users').doc(user.uid).get();
+                used = doc.exists ? doc.data().weeklyDownloads || 0 : 0;
+            } catch (error) {
+                console.error('Error getting user download data:', error);
+                used = 0; // Default to 0 if error
+            }
+        } else {
+            // For guests, use localStorage
+            used = getWeeklyDownloads();
+        }
 
-    timerEl.textContent =
-        `Resets in: ${getSundayCountdown()}`;
+        // Ensure used is a number
+        used = Number(used) || 0;
 
-    if (Number.isFinite(remaining) && remaining === 0) {
-        document.querySelectorAll('.download-btn').forEach(btn => {
-            btn.disabled = true;
-            btn.textContent = 'Limit Reached';
-            btn.classList.add('disabled');
-        });
-    } else {
-        document.querySelectorAll('.download-btn').forEach(btn => {
-            btn.disabled = false;
-            btn.textContent = 'Download';
-            btn.classList.remove('disabled');
-        });
+        if (!permission || !permission.allowed) {
+            statusEl.textContent = permission?.reason || 'Download not available';
+            timerEl.textContent = '';
+            document.querySelectorAll('.download-btn').forEach(btn => {
+                btn.disabled = true;
+                btn.textContent = 'Not Available';
+                btn.classList.add('disabled');
+            });
+            return;
+        }
+
+        if (typeof permission.limit !== 'number') {
+            // Default to guest limit if invalid
+            permission.limit = 1;
+        }
+
+        const limit = permission.limit;
+        const remaining = Math.max(limit - used, 0);
+
+        statusEl.textContent =
+            `Downloads left this week: ${remaining} / ${limit}`;
+
+        timerEl.textContent =
+            `Resets in: ${getSundayCountdown()}`;
+
+        if (Number.isFinite(remaining) && remaining === 0) {
+            document.querySelectorAll('.download-btn').forEach(btn => {
+                btn.disabled = true;
+                btn.textContent = 'Limit Reached';
+                btn.classList.add('disabled');
+            });
+        } else {
+            document.querySelectorAll('.download-btn').forEach(btn => {
+                btn.disabled = false;
+                btn.textContent = 'Download';
+                btn.classList.remove('disabled');
+            });
+        }
+    } catch (error) {
+        console.error('Error updating download status:', error);
+        statusEl.textContent = 'Download status unavailable';
+        timerEl.textContent = '';
     }
 }
 
@@ -406,9 +443,9 @@ async function handleDownload(version) {
   }
 
   /* ===============================
-     ✅ NAVIGATE TO DOWNLOAD PAGE
+     ✅ OPEN DOWNLOAD IN NEW TAB
   ================================ */
-  window.location.href = downloadURL;
+  window.open(downloadURL, '_blank');
 
   /* ===============================
      🔄 BACKGROUND UPDATES (ASYNC)
@@ -434,7 +471,8 @@ async function handleDownload(version) {
     'success'
   );
 
-  setTimeout(updateDownloadStatusUI, 500);
+  // Update UI immediately after recording download
+  updateDownloadStatusUI();
 }
 
 
@@ -719,5 +757,9 @@ async function deleteReview(reviewId) {
 
 // Initialize app detail page
 document.addEventListener('DOMContentLoaded', () => {
+  // Only run on app detail page
+  if (!document.getElementById('app-details')) {
+    return;
+  }
   loadAppDetails();
 });
